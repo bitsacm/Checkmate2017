@@ -1,0 +1,13 @@
+*Present Features!*
+
+1. Basic Login for two, will work for Single player as well.
+2. Can stop entering game before game starts, same for ending game after time ends
+3. prohibits multiple registration from same PC.
+4. Alternatively, i can use google api for registration.
+5. Addition of questions from admin interface.
+6. *Buggy* Formatted questions possible w/ text, tables, pictures, links etc.
+7. question anser matching.
+8. Appropriate rewarding for correct/wrong/unattempted answers
+9. *In progress* Leaderboard for logged in players.
+
+
