@@ -13,6 +13,9 @@ class UserProfile(models.Model):
 	email2 = models.EmailField(blank=True,null=True)
 	idno1 = models.CharField(max_length=20)
 	idno2 = models.CharField(max_length=20,blank=True)
+	score = models.IntegerField(default=0)
+	ip_address = models.CharField(null=True,max_length=20)
+	status= models.CharField(max_length=40,default="0000000000000000000000000")
 
 
 	def __str__(self):
@@ -30,7 +33,6 @@ class Question(models.Model):
         points= models.IntegerField(null=False)
         question_text=RichTextField()
         answer= models.CharField(max_length=100)
-        status = models.IntegerField(null=False, choices=((0,'0'),(1,'1'),(2,'2')),default=1)#0 is unattempted, 1 is skipped, 2 is solved!
 
         def __str__(self):
                 return "Question #"+str(self.pk)
@@ -42,5 +44,3 @@ class GameSwitch(models.Model):
 
 		def __str__(self):
 				return self.name
-
-

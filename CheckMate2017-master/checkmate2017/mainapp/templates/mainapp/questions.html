@@ -1,0 +1,13 @@
+<h1>Question#{{q.pk}}</h1>
+<h3>Building:{{q.building_context}}</h3>
+<h4>Points: {{q.points}}</h4>
+<h5>Question text:</h5>
+{{q.question_text}}
+
+<form action="" method="post">
+    {% csrf_token %}
+    {{ ansform }}
+    <input type="submit" value="Submit" />
+</form>
+
+<h7><a href="{% url 'game' %}">Skip this question!</a></h7>

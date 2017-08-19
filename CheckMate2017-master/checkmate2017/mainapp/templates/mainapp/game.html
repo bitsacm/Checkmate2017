@@ -1,2 +1,12 @@
-<h1>Enter the game now</h1>
-<h2>Logged in as:{{user.username}}</h2>
+<h1>ACM-Checkmate'17</h1>
+<h2>Logged in as:{{up.teamname}}  Current score is: {{up.score}}</h2>
+
+
+
+
+
+	{% for q in question %}
+		{{q.building_context}}
+		<a href="question/{{q.pk}}">Question#{{q.pk}}</a>
+		<br>
+	{% endfor %}

@@ -19,4 +19,5 @@ class LoginForm(forms.Form):
         password=forms.CharField(widget=forms.PasswordInput())
 
 
-
+class AnswerForm(forms.Form):
+	answer=forms.CharField(max_length=100)
