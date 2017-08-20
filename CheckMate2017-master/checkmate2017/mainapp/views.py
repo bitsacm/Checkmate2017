@@ -9,17 +9,23 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 from .controls import calculate_score
 from ipware.ip import get_ip
+import json
+from django.core import serializers
+from django.contrib.auth.decorators import login_required
 
 
 def test(request):
     return HttpResponse('Fack! it is working :D')
     
 def index(request):
+    if not request.user.is_authenticated:
         return render(request, 'mainapp/index.html',)
+    else:
+        return redirect('game')
 
 def register(request):
     up = UserProfile.objects.filter(ip_address=get_ip)
-    if up is None or 1:
+    if up is None or 1:#this is for developement time being
         form = TeamForm(request.POST)
         if request.method == 'POST':
             if form.is_valid():
