@@ -18,10 +18,10 @@ def test(request):
     return HttpResponse('Fack! it is working :D')
     
 def index(request):
-    if not request.user.is_authenticated:
+    #if not request.user.is_authenticated or request.user is 'admin':
         return render(request, 'mainapp/index.html',)
-    else:
-        return redirect('game')
+    #else:
+        #return redirect('game')
 
 def register(request):
     up = UserProfile.objects.filter(ip_address=get_ip)
