@@ -1,3 +1,4 @@
+url 'game' going through algorithmic makeover, won't work for now! Test the registration, regex was added!
 # CheckMate2017
 Check Mate event for the year 2017
 
