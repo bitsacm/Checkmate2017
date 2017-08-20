@@ -30,7 +30,7 @@ def register(request):
                 try:
                     u.save()
                 except IntegrityError:
-                    return HttpResponse('Team name already registered')
+                    return HttpResponse('Team name already registered or other conflicting entries')
                 up = UserProfile()
                 up.user = u
                 up.teamname = data['teamname']
@@ -45,6 +45,9 @@ def register(request):
                 up.ip_address = get_ip(request)
                 up.save()
                 return redirect('login')
+            else:
+                form=TeamForm(request.POST)
+                return render(request,'mainapp/register.html',{'form':form})
         return render(request,'mainapp/register.html',{'form':form})
     else:
         return HttpResponse('You have already registered once from this pc! Contact neartest ACM invigilator')

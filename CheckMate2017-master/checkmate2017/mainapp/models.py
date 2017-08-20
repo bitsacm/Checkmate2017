@@ -15,7 +15,7 @@ class UserProfile(models.Model):
 	idno2 = models.CharField(max_length=20,blank=True)
 	score = models.IntegerField(default=0)
 	ip_address = models.CharField(null=True,max_length=20)
-	status= models.CharField(max_length=40,default="0000000000000000000000000")
+	status = models.CharField(max_length=40,default="0000000000000000000000000")
 
 
 	def __str__(self):
@@ -23,7 +23,10 @@ class UserProfile(models.Model):
 
 class Building(models.Model):
         building_name = models.CharField(max_length=100)
-        difficulty_level = models.IntegerField(choices=((1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5')),default=1)
+        q_total = models.IntegerField(default=1)
+        q_solved = models.IntegerField(default=0)
+        q_skipped= models.IntegerField(default=0)
+        q_wrong = models.IntegerField(default=0)
 
         def __str__(self):
                 return self.building_name
@@ -32,7 +35,8 @@ class Question(models.Model):
         building_context = models.ForeignKey(Building)
         points= models.IntegerField(null=False)
         question_text=RichTextField()
-        answer= models.CharField(max_length=100)
+        answer = models.CharField(max_length=100)
+        difficulty_level=models.IntegerField(choices=((1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5')),default=1)
 
         def __str__(self):
                 return "Question #"+str(self.pk)
