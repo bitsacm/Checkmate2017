@@ -2,7 +2,7 @@
 <h3>Building:{{q.building_context}}</h3>
 <h4>Points: {{q.points}}</h4>
 <h5>Question text:</h5>
-{{q.question_text}}
+{{q.question_text|safe}}
 
 <form action="" method="post">
     {% csrf_token %}

@@ -126,7 +126,7 @@ def question(request,ques_id):
                 data=ansform.cleaned_data
                 ans= data['answer']
                 if ans is not None:
-                    if q.answer == ans.lower():
+                    if q.answer == (ans.lower()).strip():
                         sl[index]="2"
                         up.status="".join(sl)
                         up.save()
