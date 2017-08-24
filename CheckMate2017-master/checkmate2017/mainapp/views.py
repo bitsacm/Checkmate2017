@@ -52,8 +52,10 @@ def register(request):
                 up.save()
                 return redirect('login')
             else:
-                form=TeamForm(request.POST)
-                return render(request,'mainapp/register.html',{'form':form})
+                return HttpResponse("Failed! Invalid login attempt, make sure that you used your own BITS mail and id!")
+        else:
+            form=TeamForm(request.POST)
+            return render(request,'mainapp/register.html',{'form':form})
         return render(request,'mainapp/register.html',{'form':form})
     else:
         return HttpResponse('You have already registered once from this pc! Contact neartest ACM invigilator')
@@ -95,7 +97,7 @@ def game(request):
         if ch=='2':
             up.score+=100
     up.score-= (up.wrong_responses*25)
-    up.score-= (up.skipped*10)
+    #up.score-= (up.skipped*10)
     buildings = Building.objects.all()
     for b in buildings:
         bs[b.pk-1]='0'
@@ -124,7 +126,7 @@ def question(request,ques_id):
                 data=ansform.cleaned_data
                 ans= data['answer']
                 if ans is not None:
-                    if q.answer == ans:
+                    if q.answer == ans.lower():
                         sl[index]="2"
                         up.status="".join(sl)
                         up.save()

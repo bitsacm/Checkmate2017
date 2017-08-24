@@ -11,7 +11,7 @@ class TeamForm(forms.Form):
 	name2 = forms.CharField(max_length=50,required=False,label='Name of 2nd Participant(Optional) :')
 	phone1 = forms.IntegerField(widget=forms.TextInput(),min_value=6000000000,max_value=9999999999,label='Phone of 1st Participant :')
 	phone2 = forms.IntegerField(widget=forms.TextInput(),required=False,min_value=6000000000,max_value=9999999999,label='Phone of 2nd Participant(Optional) :')
-	email1 = forms.CharField(required=False, max_length=34, \
+	email1 = forms.CharField(max_length=34, \
 			help_text="The email id should be in this format: f201xxxxx@pilani.bits-pilani.ac.in",validators=[\
 			validators.RegexValidator(re.compile('^f201[0-9]{4,5}@pilani\.bits-pilani\.ac\.in'),\
 				message='Enter yor valid BITS-mail',code='invalid!')])
