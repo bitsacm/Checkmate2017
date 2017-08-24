@@ -7,5 +7,6 @@ urlpatterns = [
     url(r'^instructions$', views.instructions, name='instructions'),
     url(r'^game$', views.game, name='game'),
     url(r'^login$', views.login, name = 'login'),
-    url(r'^question/(?P<ques_id>\d+)/$',views.question,name='question')
+    url(r'^question_list/(\d+)/question/(?P<ques_id>\d+)/$',views.question,name='question'),
+    url(r'^question_list/(?P<build_id>\d+)/$',views.question_list,name='question_list'),
 ]

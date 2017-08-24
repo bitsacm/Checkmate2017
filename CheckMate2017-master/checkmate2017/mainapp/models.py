@@ -17,11 +17,11 @@ class UserProfile(models.Model):
 
 	email1 = models.CharField(unique=True,null=False, max_length=34, \
 			help_text="The email id should be in this format: f201xxxxx@pilani.bits-pilani.ac.in",validators=[\
-			validators.RegexValidator(re.compile('^f201[0-9]{4-5}@pilani\.bits-pilani\.ac\.in'),\
+			validators.RegexValidator(re.compile('^f201[0-9]{4,5}@pilani\.bits-pilani\.ac\.in'),\
 				message='Enter yor valid BITS-mail',code='invalid!')])
 	email2 = models.CharField(unique=True,null=True,blank=True, max_length=34, \
 			help_text="The email id should be in this format: f201xxxxx@pilani.bits-pilani.ac.in",validators=[\
-			validators.RegexValidator(re.compile('^f201[0-9]{4-5}@pilani\.bits-pilani\.ac\.in'),\
+			validators.RegexValidator(re.compile('^f201[0-9]{4,5}@pilani\.bits-pilani\.ac\.in'),\
 				message='Enter yor valid BITS-mail',code='invalid!')])
 
 	idno1 = models.CharField(max_length=20,validators=[\
@@ -32,6 +32,9 @@ class UserProfile(models.Model):
 	score = models.IntegerField(default=0)
 	ip_address = models.CharField(null=True,max_length=20)
 	status = models.CharField(max_length=40,default="0000000000000000000000000")
+	build_solved= models.CharField(max_length=30,default="00000000000000000000000000")
+	wrong_responses= models.IntegerField(default=0)
+	skipped= models.IntegerField(default=0)
 
 
 	def __str__(self):
@@ -40,15 +43,12 @@ class UserProfile(models.Model):
 class Building(models.Model):
         building_name = models.CharField(max_length=100)
         q_total = models.IntegerField(default=1)
-        q_solved = models.IntegerField(default=0)
-        q_skipped= models.IntegerField(default=0)
-        q_wrong = models.IntegerField(default=0)
 
         def __str__(self):
                 return self.building_name
 
 class Question(models.Model):
-        building_context = models.ForeignKey(Building)
+        building_context = models.ForeignKey(Building,on_delete=models.CASCADE)
         points= models.IntegerField(null=False)
         question_text=RichTextField()
         answer = models.CharField(max_length=100)

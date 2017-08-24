@@ -9,5 +9,6 @@
 7. question anser matching.
 8. Appropriate rewarding for correct/wrong/unattempted answers
 9. *In progress* Leaderboard for logged in players.
+10. Regex for registration
 
 
