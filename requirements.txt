@@ -1,3 +1,4 @@
 Django==1.11.4
 django-ckeditor
 django-ipware
+psycopg2
