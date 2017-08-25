@@ -1,4 +1,5 @@
-url 'game' going through algorithmic makeover, won't work for now! Test the registration, regex was added!
+Integration will be going on so, use urls to navigate!
+
 # CheckMate2017
 Check Mate event for the year 2017
 
