@@ -1,4 +1,81 @@
-<h1>Hey, welcome to checkmate 2017</h1>
+{%load static from staticfiles%}
 
-<a href={%url 'register'%}>Register</a>
-<a href={%url 'instructions'%}>Read Instructions</a>
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Checkmate</title>
+		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/normalize.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/main.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/style.css' %}" />
+		<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'mainapp/js/main1.js' %}"></script>
+		<link rel="stylesheet" type="text/css" href="mainapp/css/loader.css">
+		<script type="text/javascript">
+			function loadRem(){
+				document.getElementById("loader-wrapper").style.display="none";
+				document.getElementById("entire").style.display="block";
+			}
+		</script>
+	</head>
+	<body onload="loadRem()" style="background: url('{% static 'mainapp/img/back1.jpg' %}') no-repeat; background-size:cover;">
+		<div id="loader-wrapper">
+			<div id="loader"></div>
+
+			<div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+
+		</div>
+		<div id="entire">
+
+
+			<div  class="open">
+					<span class="cls"></span>
+					<span>
+							<ul class="sub-menu ">
+									<li>
+											<a href="{% url 'index' %}" title="home">Home</a>
+									</li>
+									<li>
+											<a href="{% url 'instructions' %}" title="instr">Instructions</a>
+									</li>
+									<li>
+											<a href="#" title="lead">Leaderboard</a>
+									</li>
+									<li>
+											<a href="{% url 'login' %}" title="regis">Login</a>
+									</li>
+							</ul>
+					</span>
+					<span class="cls"></span>
+			</div>
+
+
+		<div id="header">
+			<h1>Checkmate</h1>
+		</div>
+		<div class="container">
+			<div class="content">
+				<section class="section" style="margin-top:150px;">
+					<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-filters">
+						<defs>
+							<filter id="filter-glitch-1">
+								<feTurbulence type="fractalNoise" baseFrequency="0.000001" numOctaves="1" result="warp" />
+								<feOffset dx="-90" dy="-90" result="warpOffset" />
+								<feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="30" in="SourceGraphic" in2="warpOffset" />
+							</filter>
+						</defs>
+					</svg>
+					<button id="component-5" class="button button--5" onclick="alert('hey')">Start</button>
+				</section>
+
+			</div>
+		</div>
+	</div>
+		<script src="{% static 'mainapp/js/TweenMax.min.js' %}"></script>
+		<script src="{% static 'mainapp/js/main.js' %}"></script>
+	</body>
+</html>
