@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from .models import UserProfile, GameSwitch, Building, Question
@@ -76,7 +77,7 @@ def login(request):
                 user = authenticate(username = teamname, password=password)
                 if user is not None:
                     auth.login(request, user)
-                    return redirect('game')
+                    return redirect(reverse('mainapp:game'))
             else:
                 return HttpResponse('Invalid form')
         else:

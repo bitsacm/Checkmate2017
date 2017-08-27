@@ -1,5 +1,70 @@
-<form action="" method="post">
-    {% csrf_token %}
-    {{ lform }}
-    <input type="submit" value="Submit" />
-</form>
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+{% load static %}
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="{% static 'mainapp/css/login.css' %}">
+		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+  </head>
+
+	<body>
+		<div  class="open">
+				<span class="cls"></span>
+				<span>
+						<ul class="sub-menu ">
+									<li>
+											<a href="{% url 'mainapp:index' %}" title="home">Home</a>
+									</li>
+									<li>
+											<a href="{% url 'mainapp:instructions' %}" title="instr">Instructions</a>
+									</li>
+									<li>
+											<a href="#" title="lead">Leaderboard</a>
+									</li>
+									<li>
+											<a href="{% url 'mainapp:login' %}" title="regis">Login</a>
+									</li>
+							</ul>
+				</span>
+				<span class="cls"></span>
+		</div>
+
+
+		<div class="panel">
+		  <ul class="panel__menu" id="menu">
+		    <hr/>
+		    <li id="signIn"> <a href="#">Log In</a></li>
+		    <li id="signUp"><a href="#">&emsp;Sign up</a></li>
+		  </ul>
+		  <div class="panel__wrap">
+		    <div class="panel__box active" id="signInBox">
+		      <label>Email
+		        <input type="email"/>
+		      </label>
+		      <label>Password
+		        <input type="password"/>
+		      </label>
+		      <input type="submit"/>
+		    </div>
+		    <div class="panel__box" id="signUpBox">
+		      <label>Email
+		        <input type="email"/>
+		      </label>
+		      <label>Password
+		        <input type="password"/>
+		      </label>
+		      <label>Confirm password
+		        <input type="password"/>
+		      </label>
+						<input type="submit"/>
+		    </div>
+		  </div>
+		</div>
+
+		<script src="{% static 'mainapp/js/login.js' %}"></script>
+		<script src="{% static 'mainapp/js/main.js' %}"></script>
+	</body>

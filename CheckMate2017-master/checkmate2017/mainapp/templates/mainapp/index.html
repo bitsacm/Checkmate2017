@@ -1,19 +1,19 @@
-{%load static from staticfiles%}
-
 <!DOCTYPE html>
 <html lang="en" class="no-js">
+{% load static %}
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Checkmate</title>
-		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/normalize.css' %}" />
-		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/main.css' %}" />
-		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/style.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/normalize.css' %}"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/main.css' %}"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/style.css' %}"/>
+		// TODO: find local file for font
 		<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'mainapp/js/main1.js' %}"></script>
-		<link rel="stylesheet" type="text/css" href="mainapp/css/loader.css">
+		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/loader.css' %}">
 		<script type="text/javascript">
 			function loadRem(){
 				document.getElementById("loader-wrapper").style.display="none";
@@ -21,7 +21,7 @@
 			}
 		</script>
 	</head>
-	<body onload="loadRem()" style="background: url('{% static 'mainapp/img/back1.jpg' %}') no-repeat; background-size:cover;">
+	<body onload="loadRem()" style="background: url('./media/img/back1.jpg') no-repeat; background-size:cover;">
 		<div id="loader-wrapper">
 			<div id="loader"></div>
 
@@ -37,16 +37,16 @@
 					<span>
 							<ul class="sub-menu ">
 									<li>
-											<a href="{% url 'index' %}" title="home">Home</a>
+											<a href="{% url 'mainapp:index' %}" title="home">Home</a>
 									</li>
 									<li>
-											<a href="{% url 'instructions' %}" title="instr">Instructions</a>
+											<a href="{% url 'mainapp:instructions' %}" title="instr">Instructions</a>
 									</li>
 									<li>
 											<a href="#" title="lead">Leaderboard</a>
 									</li>
 									<li>
-											<a href="{% url 'login' %}" title="regis">Login</a>
+											<a href="{% url 'mainapp:login' %}" title="regis">Login</a>
 									</li>
 							</ul>
 					</span>
