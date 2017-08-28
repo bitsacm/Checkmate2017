@@ -28,34 +28,31 @@ def register(request):
     up = UserProfile.objects.filter(ip_address=get_ip)
     if up is None or 1:#this is for developement time being
         form = TeamForm(request.POST)
-        if request.method == 'POST':
+        if request.method == 'POST' and 'register-submit' in request.POST:
+            print("1")
             if form.is_valid():
+                print("2")
                 data = form.cleaned_data
                 u = User()
-                u.username = data['teamname']
-                u.set_password(data['password'])
+                u.username = data['teamname1']
+                u.set_password(data['password1'])
                 try:
                     u.save()
                 except IntegrityError:
                     return HttpResponse('Team name already registered or other conflicting entries')
                 up = UserProfile()
                 up.user = u
-                up.teamname = data['teamname']
-                up.name1=data['name1']
-                up.name2=data['name2']
-                up.phone1 = data['phone1']
-                up.phone2 = data['phone2']
-                up.email1=data['email1']
-                up.email2=data['email2']
+                up.teamname = data['teamname1']
                 up.id1=data['idno1']
                 up.id2=data['idno2']
                 up.ip_address = get_ip(request)
                 up.save()
+                print("3")
                 return redirect('login')
             else:
-                #return HttpResponse("Failed! Invalid login attempt, make sure that you used your own BITS mail and id!")
-                print ({form.errors})
+                return HttpResponse("Failed! Invalid login attempt, make sure that you used your own BITS mail and id!")
         else:
+            print("4")
             form=TeamForm(request.POST)
             return render(request,'mainapp/login.html',{'form':form})
         return render(request,'mainapp/login.html',{'form':form})
@@ -70,7 +67,7 @@ def login(request):
     g=GameSwitch.objects.get(name='main')
     if g.start_game and not g.end_game:
         lform = LoginForm(request.POST)
-        if request.method == 'POST':
+        if request.method == 'POST' and 'login-submit' in request.POST:
             if lform.is_valid():
                 data=lform.cleaned_data
                 teamname = data['teamname']
@@ -79,8 +76,10 @@ def login(request):
                 if user is not None:
                     auth.login(request, user)
                     return redirect(reverse('mainapp:game'))
+                else:
+                    return HttpResponse("No such user exists!")
             else:
-                return HttpResponse('Invalid form')
+                print ( lform.errors )
         else:
             lform=LoginForm(request.POST)
             return render(request, 'mainapp/login.html',{'lform':lform,})
@@ -143,7 +142,7 @@ def question(request,ques_id):
             if sl[index]== "1":
                 up.skipped+=1
             up.status="".join(sl)
-            up.save()   
+            up.save() 
             return render(request,'mainapp/questions.html',{'q':q,'ansform':ansform,})
         else:
             ansform=AnswerForm(request.POST)
