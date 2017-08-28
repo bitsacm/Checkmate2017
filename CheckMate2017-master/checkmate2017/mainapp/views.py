@@ -53,11 +53,12 @@ def register(request):
                 up.save()
                 return redirect('login')
             else:
-                return HttpResponse("Failed! Invalid login attempt, make sure that you used your own BITS mail and id!")
+                #return HttpResponse("Failed! Invalid login attempt, make sure that you used your own BITS mail and id!")
+                print ({form.errors})
         else:
             form=TeamForm(request.POST)
-            return render(request,'mainapp/register.html',{'form':form})
-        return render(request,'mainapp/register.html',{'form':form})
+            return render(request,'mainapp/login.html',{'form':form})
+        return render(request,'mainapp/login.html',{'form':form})
     else:
         return HttpResponse('You have already registered once from this pc! Contact neartest ACM invigilator')
     
@@ -88,28 +89,30 @@ def login(request):
         return HttpResponse('The game is not started yet, or it has already ended')
 
 def game(request):
-    question = Question.objects.all()
-    up = UserProfile.objects.get(user=request.user)
-    sl= list(up.status)
-    bs= list(up.build_solved)
-    up.score=0
-    for q in question:
-        ch = sl[q.pk-1]
-        if ch=='2':
-            up.score+=100
-    up.score-= (up.wrong_responses*25)
-    #up.score-= (up.skipped*10)
-    buildings = Building.objects.all()
-    for b in buildings:
-        bs[b.pk-1]='0'
-        qe=Question.objects.filter(building_context=b)
-        for qi in qe:
-            if sl[qi.pk-1]=='2':
-                bs[b.pk-1]=(int(bs[b.pk-1])+1).__str__()
+    if not (request.user).is_authenticated():
+        return redirect('mainapp:login')
+    else:
+        question = Question.objects.all()
+        up = UserProfile.objects.get(user=request.user)
+        sl= list(up.status)
+        bs= list(up.build_solved)
+        up.score=0
+        for q in question:
+            ch = sl[q.pk-1]
+            if ch=='2':
+                up.score+=100
+        up.score-= (up.wrong_responses*25)
+        buildings = Building.objects.all()
+        for b in buildings:
+            bs[b.pk-1]='0'
+            qe=Question.objects.filter(building_context=b)
+            for qi in qe:
+                if sl[qi.pk-1]=='2':
+                    bs[b.pk-1]=(int(bs[b.pk-1])+1).__str__()
 
-    up.build_solved="".join(bs)
-    up.save()
-    return render(request, 'mainapp/game.html',{'up':up,'bs':bs,'buildings':buildings})
+        up.build_solved="".join(bs)
+        up.save()
+        return render(request, 'mainapp/game.html',{'up':up,'bs':bs,'buildings':buildings})
 
 def question(request,ques_id):
     index = int(ques_id) -1

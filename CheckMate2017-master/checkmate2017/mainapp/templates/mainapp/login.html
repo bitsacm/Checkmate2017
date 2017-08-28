@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" class="no-js">
-{% load static %}
+{% load static from staticfiles %}
 	<head>
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="{% static 'mainapp/css/login.css' %}">
-		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+		<link rel="stylesheet" href="{% static 'mainapp/css/style.css' %}">
 		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
 		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
   </head>
@@ -40,30 +40,52 @@
 		    <li id="signIn"> <a href="#">Log In</a></li>
 		    <li id="signUp"><a href="#">&emsp;Sign up</a></li>
 		  </ul>
+		  
+		  
 		  <div class="panel__wrap">
 		    <div class="panel__box active" id="signInBox">
-		      <label>Email
-		        <input type="email"/>
+		  <form id="login-form" action='./login' role="form" style="display: block;" method="POST" >
+                {% csrf_token %}
+
+                {% if error_message %}
+                  {{ error_message }}
+                {% endif %}<br>
+		      <label>Team name
+		        <input  type="text" name="teamname" id="teamname"   placeholder="Teamname" value="" >
 		      </label>
 		      <label>Password
-		        <input type="password"/>
+		        <input type="password" name="password" id="password"   placeholder="Password" value="" >
 		      </label>
-		      <input type="submit"/>
+		      <input type="submit"  value="Login Now"/>
+		<form/>
 		    </div>
+		
+			
+			
+		<form id="register-form" action='./register' role="form" style="display: block;" method="POST" >
+		{% csrf_token %}
+
+                {% if error_message %}
+                  {{ error_message }}
+                {% endif %}<br>
 		    <div class="panel__box" id="signUpBox">
-		      <label>Email
-		        <input type="email"/>
+		      <label>Team name
+		        <input  type="text" name="teamname"    placeholder="Teamname" value="">
+		      </label>
+			  <label>BITS ID1
+		        <input  type="text" name="idno1"    placeholder="BITS ID number" value="">
+		      </label>
+		      <label>BITS ID2
+		        <input  type="text" name="idno2"    placeholder="BITS ID number" value="" >
 		      </label>
 		      <label>Password
-		        <input type="password"/>
+		        <input type="password" name="password"  placeholder="Password" >
 		      </label>
-		      <label>Confirm password
-		        <input type="password"/>
-		      </label>
-						<input type="submit"/>
+					<input type="submit" value="Register Now"/>
 		    </div>
 		  </div>
-		</div>
+		  </div>
+		<form/>
 
 		<script src="{% static 'mainapp/js/login.js' %}"></script>
 		<script src="{% static 'mainapp/js/main.js' %}"></script>

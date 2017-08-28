@@ -1,8 +1,9 @@
-<!doctype html>
+{%load static from staticfiles%}
+
+<!Doctype html>
 <html lang="en">
-{% load static %}
 <head>
-<meta name="viewport" content="width = 1050, user-scalable = no" />
+<meta name="viewport" content="width = 1050,user-scalable = no " />
 <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/style.css' %}" />
 <script type="text/javascript" src="{% static 'mainapp/extras/jquery.min.1.7.js' %}"></script>
 <script type="text/javascript" src="{% static 'mainapp/extras/modernizr.2.5.3.min.js' %}"></script>
@@ -22,9 +23,10 @@
 											<a href="#" title="lead">Leaderboard</a>
 									</li>
 									<li>
-											<a href="{% url 'mainapp:login' %}" title="regis">Login</a>
+											<a href="{%  url 'mainapp:login' %}" title="regis">Login</a>
 									</li>
-							</ul>
+
+					</ul>
 			</span>
 			<span class="cls"></span>
 	</div>
@@ -32,18 +34,13 @@
 <div class="flipbook-viewport">
 	<div class="container">
 		<div class="flipbook">
-			<div style="background-image:url(media/img/pages/2.jpg)"></div>
-			<div style="background-image:url(media/img/pages/4.jpg)"></div>
-			<div style="background-image:url(media/img/pages/2.jpg)"></div>
-			<div style="background-image:url(media/img/pages/4.jpg)"></div>
-			<div style="background-image:url(media/img/pages/2.jpg)"></div>
-			<div style="background-image:url(media/img/pages/4.jpg)"></div>
-			<div style="background-image:url(media/img/pages/2.jpg)"></div>
-			<div style="background-image:url(media/img/pages/4.jpg)"></div>
-			<div style="background-image:url(media/img/pages/2.jpg)"></div>
-			<div style="background-image:url(media/img/pages/4.jpg)"></div>
-			<div style="background-image:url(media/img/pages/2.jpg)"></div>
-			<div style="background-image:url(media/img/pages/4.jpg)"></div>
+			<div style="background-image:url( {% static 'mainapp/img/pages/2.jpg' %} )"></div>
+			<div style="background-image:url( {% static 'mainapp/img/pages/4.jpg' %} )"></div>
+			<div style="background-image:url( {% static 'mainapp/img/pages/2.jpg' %} )"></div>
+			<div style="background-image:url( {% static 'mainapp/img/pages/4.jpg' %} )"></div>
+			<div style="background-image:url( {% static 'mainapp/img/pages/2.jpg' %} )"></div>
+			<div style="background-image:url( {% static 'mainapp/img/pages/4.jpg' %} )"></div>
+			<div style="background-image:url( {% static 'mainapp/img/pages/2.jpg' %} )"></div>
 		</div>
 	</div>
 </div>
@@ -76,16 +73,16 @@ function loadApp() {
 
 	});
 }
-// TODO: render yepnope static files
+
 yepnope({
 	test : Modernizr.csstransforms,
-	yep: [{% static 'mainapp/lib/turn.js' %}],
-	nope: [{% static 'mainapp/lib/turn.html4.min.js' %}],
-	both: [{% static 'mainapp/css/basic.css' %}],
+	yep: ['{% static 'mainapp/lib/turn.js' %}'],
+	nope: ['{% static 'mainapp/lib/turn.html4.min.js' %}'],
+	both: ['{% static 'mainapp/css/basic.css' %} '],
 	complete: loadApp
 });
 
 </script>
-<script src="{% static 'mainapp/js/main.js' %}"></script>
+<script type ="text/javascript" src="{% static 'mainapp/js/main.js' %}"></script>
 </body>
 </html>
