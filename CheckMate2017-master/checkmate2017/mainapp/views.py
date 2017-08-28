@@ -19,10 +19,10 @@ def test(request):
     return HttpResponse('Fack! it is working :D')
     
 def index(request):
-    #if not request.user.is_authenticated or request.user is 'admin':
+    if not request.user.is_authenticated or request.user.username == "admin":
         return render(request, 'mainapp/index.html',)
-    #else:
-        #return redirect('game')
+    else:
+        return redirect('mainapp:game')
 
 def register(request):
     up = UserProfile.objects.filter(ip_address=get_ip)
@@ -60,33 +60,35 @@ def instructions(request):
     return render(request, 'mainapp/instructions.html')
 
 def login(request):
-    g=GameSwitch.objects.get(name='main')
-    if g.start_game and not g.end_game:
-        tform=TeamForm(request.POST)
-        lform = LoginForm(request.POST)
-        if request.method == 'POST' and 'login-submit' in request.POST:
-            if lform.is_valid():
-                data=lform.cleaned_data
-                teamname = data['teamname']
-                password = data['password']
-                user = authenticate(username = teamname, password=password)
-                if user is not None:
-                    auth.login(request, user)
-                    return redirect(reverse('mainapp:game'))
-                else:
-                    return HttpResponse("No such user exists!")
-            else:
-                print ( lform.errors )
-        else:
-            lform=LoginForm(request.POST)
-            #tform=TeamForm(request.POST)
-            return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
-        return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
+    if request.user.is_authenticated:
+        return redirect('mainapp:game')
     else:
-        return HttpResponse('The game is not started yet, or it has already ended')
+        g=GameSwitch.objects.get(name='main')
+        if g.start_game and not g.end_game:
+            tform=TeamForm(request.POST)
+            lform = LoginForm(request.POST)
+            if request.method == 'POST' and 'login-submit' in request.POST:
+                if lform.is_valid():
+                    data=lform.cleaned_data
+                    teamname = data['teamname']
+                    password = data['password']
+                    user = authenticate(username = teamname, password=password)
+                    if user is not None:
+                        auth.login(request, user)
+                        return redirect(reverse('mainapp:game'))
+                    else:
+                        return HttpResponse("No such user exists!")
+                else:
+                    print ( lform.errors )
+            else:
+                lform=LoginForm(request.POST)
+                return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
+            return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
+        else:
+            return HttpResponse('The game is not started yet, or it has already ended')
 
 def game(request):
-    if not (request.user).is_authenticated():
+    if not (request.user).is_authenticated() or (request.user.username) == "admin":
         return redirect('mainapp:login')
     else:
         question = Question.objects.all()
@@ -117,7 +119,7 @@ def question(request,ques_id):
     q = Question.objects.get(pk=ques_id)
     sl= list(up.status)
     if sl[index]=="2":
-        return redirect('game')
+        return redirect('mainapp:game')
     else:
         sl[index]="1"
         up.status="".join(sl)
@@ -131,7 +133,7 @@ def question(request,ques_id):
                         sl[index]="2"
                         up.status="".join(sl)
                         up.save()
-                        return redirect('game')
+                        return redirect('mainapp:game')
                     else :
                         sl[index]="3"
                         up.status="".join(sl)
