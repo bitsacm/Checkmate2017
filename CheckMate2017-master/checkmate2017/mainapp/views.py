@@ -41,8 +41,8 @@ def register(request):
                 up = UserProfile()
                 up.user = u
                 up.teamname = data['teamname1']
-                up.id1=data['idno1']
-                up.id2=data['idno2']
+                up.idno1=data['idno1']
+                up.idno2=data['idno2']
                 up.ip_address = get_ip(request)
                 up.save()
                 return redirect('mainapp:login')
@@ -60,7 +60,7 @@ def instructions(request):
     return render(request, 'mainapp/instructions.html')
 
 def login(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated() and not request.user.username == "admin":
         return redirect('mainapp:game')
     else:
         g=GameSwitch.objects.get(name='main')
@@ -77,7 +77,7 @@ def login(request):
                         auth.login(request, user)
                         return redirect(reverse('mainapp:game'))
                     else:
-                        return HttpResponse("No such user exists!")
+                        return HttpResponse("Do not forget to register before login :p !")
                 else:
                     print ( lform.errors )
             else:
