@@ -85,11 +85,6 @@ a {
   -webkit-transform-origin: center left;
           transform-origin: center left;
 }
-.panel__wrap .panel__box:last-child input[type="submit"] {
-  background: none;
-  border: 1px solid #A5E434;
-  color: #A5E434;
-}
 .panel__wrap .panel__box:last-child.active {
   -webkit-animation: box-2 0.5s;
           animation: box-2 0.5s;
