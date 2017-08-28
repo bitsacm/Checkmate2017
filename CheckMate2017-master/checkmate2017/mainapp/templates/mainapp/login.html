@@ -58,20 +58,19 @@
 		        <input type="password" name="password" id="password"  value="" placeholder="Password" value="" >
 		      </label>
 		      <input type="submit" name="login-submit" value="login"/>
-		<form/>
+		</form>
 		    </div>
 		
 			
 			
 		    <div class="panel__box" id="signUpBox">
 			<form id = "register-form" action ="{% url 'mainapp:register' %}" role="form" style="display: block;" method="POST" >
-		{% csrf_token %}
+			{% csrf_token %}
 
                 {% if error_message %}
                   {{ error_message }}
                 {% endif %}
-		
-		      <label>Team name
+				      <label>Team name
 		        <input  type="text" name="teamname1"    placeholder="Teamname" value="">
 		      </label>
 			  <label>BITS ID1
@@ -84,7 +83,7 @@
 		        <input type="password" name="password1" value="" placeholder="Password" >
 		      </label>
 					<input type="submit" name= "register-submit" value="Register Now"/>
-					<form/>
+			</form>
 		    </div>
 		  </div>
 		  </div>

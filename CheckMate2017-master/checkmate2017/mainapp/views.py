@@ -29,9 +29,7 @@ def register(request):
     if up is None or 1:#this is for developement time being
         form = TeamForm(request.POST)
         if request.method == 'POST' and 'register-submit' in request.POST:
-            print("1")
             if form.is_valid():
-                print("2")
                 data = form.cleaned_data
                 u = User()
                 u.username = data['teamname1']
@@ -47,12 +45,10 @@ def register(request):
                 up.id2=data['idno2']
                 up.ip_address = get_ip(request)
                 up.save()
-                print("3")
-                return redirect('login')
+                return redirect('mainapp:login')
             else:
                 return HttpResponse("Failed! Invalid login attempt, make sure that you used your own BITS mail and id!")
         else:
-            print("4")
             form=TeamForm(request.POST)
             return render(request,'mainapp/login.html',{'form':form})
         return render(request,'mainapp/login.html',{'form':form})
@@ -66,6 +62,7 @@ def instructions(request):
 def login(request):
     g=GameSwitch.objects.get(name='main')
     if g.start_game and not g.end_game:
+        tform=TeamForm(request.POST)
         lform = LoginForm(request.POST)
         if request.method == 'POST' and 'login-submit' in request.POST:
             if lform.is_valid():
@@ -82,8 +79,9 @@ def login(request):
                 print ( lform.errors )
         else:
             lform=LoginForm(request.POST)
-            return render(request, 'mainapp/login.html',{'lform':lform,})
-        return render(request, 'mainapp/login.html',{'lform':lform,})
+            #tform=TeamForm(request.POST)
+            return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
+        return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
     else:
         return HttpResponse('The game is not started yet, or it has already ended')
 
