@@ -91,8 +91,17 @@ def game(request):
     if not (request.user).is_authenticated() or (request.user.username) == "admin":
         return redirect('mainapp:login')
     else:
-        question = Question.objects.all()
         up = UserProfile.objects.get(user=request.user)
+        buildings = Building.objects.all()
+        if 'bquery' in request.POST:
+            bl = Building.objects.get(building_name=bquery)
+            data = serializers.serialize('json', [bl,up,])
+            struct = json.loads(data)
+            #print ("struct=",struct[0])
+            data = json.dumps(struct)
+            return HttpResponse(data, mimetype='application/json')
+
+        question = Question.objects.all()
         sl= list(up.status)
         bs= list(up.build_solved)
         up.score=0
@@ -101,7 +110,7 @@ def game(request):
             if ch=='2':
                 up.score+=100
         up.score-= (up.wrong_responses*25)
-        buildings = Building.objects.all()
+        
         for b in buildings:
             bs[b.pk-1]='0'
             qe=Question.objects.filter(building_context=b)
