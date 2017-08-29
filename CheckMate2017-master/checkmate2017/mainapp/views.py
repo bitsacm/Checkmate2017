@@ -93,13 +93,14 @@ def game(request):
     else:
         up = UserProfile.objects.get(user=request.user)
         buildings = Building.objects.all()
+        d={}
         if 'bquery' in request.POST:
             bl = Building.objects.get(building_name=bquery)
-            data = serializers.serialize('json', [bl,up,])
-            struct = json.loads(data)
-            #print ("struct=",struct[0])
-            data = json.dumps(struct)
-            return HttpResponse(data, mimetype='application/json')
+            qs = Question.objects.filter(building_context=bl)
+            for i in qs:
+                d[i.pk-1]=json.loads(serializers.serialize('json', [i,]))
+            print ("struct=",struct)
+            return HttpResponse(json.dumps(d), content_type = "application/json")
 
         question = Question.objects.all()
         sl= list(up.status)
