@@ -88,6 +88,7 @@ def login(request):
             return HttpResponse('The game is not started yet, or it has already ended')
 
 def game(request):
+    print(request)
     if not (request.user).is_authenticated() or (request.user.username) == "admin":
         return redirect('mainapp:login')
     else:
@@ -98,11 +99,12 @@ def game(request):
             buildings = Building.objects.all()
             d={}
             if 'bquery' in request.POST:
+            	bquery = request.POST['bquery']
                 bl = Building.objects.get(building_name=bquery)
                 qs = Question.objects.filter(building_context=bl)
                 for i in qs:
                     d[i.pk-1]=json.loads(serializers.serialize('json', [i,]))
-                print ("struct=",struct)
+                # print ("struct=",struct)
                 return HttpResponse(json.dumps(d), content_type = "application/json")
 
             question = Question.objects.all()
