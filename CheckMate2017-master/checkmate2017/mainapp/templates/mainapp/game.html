@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static from staticfiles %}
+<h5><a href="{% url 'mainapp:congrats' %}">End game</a></h5>
 <html>
 	<head>
 		<title>MAP</title>
@@ -13308,7 +13309,7 @@
 		var k = "{{b.building_name}}"
 		buildings_names.push(k);
 	{% endfor %}
-<div method='POST' name="bquery" value="Clock Tower"></div>
+
 	
 </script>
 </body>

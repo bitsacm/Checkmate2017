@@ -18,6 +18,7 @@ class UserProfile(models.Model):
 	status = models.CharField(max_length=40,default="0000000000000000000000000")
 	build_solved= models.CharField(max_length=30,default="00000000000000000000000000")
 	wrong_responses= models.IntegerField(default=0)
+	logstat=models.IntegerField(null=False, choices=((0,'0'),(1,'1')),default=0)#0 for logged out, 1 for logged in
 
 
 	def __str__(self):

@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from .models import UserProfile, GameSwitch, Building, Question
 from django.shortcuts import redirect, render_to_response
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib import auth
 from .forms import TeamForm, LoginForm, AnswerForm
 from django.db import IntegrityError
@@ -92,36 +92,39 @@ def game(request):
         return redirect('mainapp:login')
     else:
         up = UserProfile.objects.get(user=request.user)
-        buildings = Building.objects.all()
-        d={}
-        if 'bquery' in request.POST:
-            bl = Building.objects.get(building_name=bquery)
-            qs = Question.objects.filter(building_context=bl)
-            for i in qs:
-                d[i.pk-1]=json.loads(serializers.serialize('json', [i,]))
-            print ("struct=",struct)
-            return HttpResponse(json.dumps(d), content_type = "application/json")
+        if up.logstat==1:
+            return HttpResponse("You have already logged out once!")
+        else:
+            buildings = Building.objects.all()
+            d={}
+            if 'bquery' in request.POST:
+                bl = Building.objects.get(building_name=bquery)
+                qs = Question.objects.filter(building_context=bl)
+                for i in qs:
+                    d[i.pk-1]=json.loads(serializers.serialize('json', [i,]))
+                print ("struct=",struct)
+                return HttpResponse(json.dumps(d), content_type = "application/json")
 
-        question = Question.objects.all()
-        sl= list(up.status)
-        bs= list(up.build_solved)
-        up.score=0
-        for q in question:
-            ch = sl[q.pk-1]
-            if ch=='2':
-                up.score+=100
-        up.score-= (up.wrong_responses*25)
+            question = Question.objects.all()
+            sl= list(up.status)
+            bs= list(up.build_solved)
+            up.score=0
+            for q in question:
+                ch = sl[q.pk-1]
+                if ch=='2':
+                    up.score+=100
+            up.score-= (up.wrong_responses*25)
         
-        for b in buildings:
-            bs[b.pk-1]='0'
-            qe=Question.objects.filter(building_context=b)
-            for qi in qe:
-                if sl[qi.pk-1]=='2':
-                    bs[b.pk-1]=(int(bs[b.pk-1])+1).__str__()
+            for b in buildings:
+                bs[b.pk-1]='0'
+                qe=Question.objects.filter(building_context=b)
+                for qi in qe:
+                    if sl[qi.pk-1]=='2':
+                        bs[b.pk-1]=(int(bs[b.pk-1])+1).__str__()
 
-        up.build_solved="".join(bs)
-        up.save()
-        return render(request, 'mainapp/game.html',{'up':up,'bs':bs,'buildings':buildings})
+            up.build_solved="".join(bs)
+            up.save()
+            return render(request, 'mainapp/game.html',{'up':up,'bs':bs,'buildings':buildings})
 
 def question(request,ques_id):
     index = int(ques_id) -1
@@ -149,8 +152,8 @@ def question(request,ques_id):
                         up.status="".join(sl)
                         up.wrong_responses+=1
                         up.save()
-            if sl[index]== "1":
-                up.skipped+=1
+            #if sl[index]== "1":
+                #up.skipped+=1
             up.status="".join(sl)
             up.save() 
             return render(request,'mainapp/questions.html',{'q':q,'ansform':ansform,})
@@ -165,3 +168,13 @@ def question_list(request, build_id):
     building=Building.objects.get(pk=build_id)
     questions = Question.objects.filter(building_context=building)
     return render(request,'mainapp/question_list.html',{'questions':questions,'sl':sl,'building':building})
+
+def congrats(request):
+    return render(request,'mainapp/congrats.html')
+
+def logout(request):
+    up = UserProfile.objects.get(user=request.user)
+    up.logstat=1
+    up.save()
+    django_logout(request)
+    return render(request, 'mainapp/index.html')
