@@ -2,20 +2,34 @@
 $(document).ready(function(){
 
 	// developer_info
-	$('body').append('<div id="dev_info"><h1>#prototype</h1><span></span></div>');
+	// $('body').append('<div id="dev_info"><h1>#prototype</h1><span></span></div>');
 	
+
 	// names on buildings
 	$('body').append('<div id="building_names"></div>');
-	$('#building_names').css({'position': 'absolute','top': 0, 'left':0, 'width': 'fit-content', 'background': 'rgba(0,0,0,0.2)', 'color': '#eee', 'fontSize': '10px', 'padding': '2px', 'borderRadius': '6px'});
+	// $('#building_names').css({'position': 'absolute','top': 0, 'left':0, 'width': 'fit-content', 'background': 'rgba(0,0,0,0.2)', 'color': '#eee', 'fontSize': '10px', 'padding': '2px', 'borderRadius': '6px'});
 
 	//fancy colors
 	$('body').css('backgroundColor', 'rgba(210, 186, 2, 0.14)');
 	$('body').css('fontFamily', 'arial, verdana');
 	
-	var svg = $('svg')
+	var svg = $('svg');
 	
-	var player = $('#g316');
+	// getNamedItem('viewbox').value
+	
+	var player = getPlayer();
+	player.fadeIn();
 	window.playground = svg;
+
+	function getPlayer(){
+		$('#player_boy').hide();
+		$('#player_girl').hide()
+
+		// ...?
+		return $('#player_girl');
+	}
+
+
 
 	/*****
 	*
@@ -24,20 +38,31 @@ $(document).ready(function(){
 	******/
 
 
-	var roads = $('.cls-3')
-	var inital_pos = [-250, 20]
+	var roads = $('*[data-name=road]');
+	
+	var inital_pos = [-1060, 250]
 	// initial position
-	TweenMax.set(player, {scale: .5, xPercent: -250, yPercent: 20})
+	TweenMax.set(player, {scale: .5, xPercent: -1060, yPercent: 250})
 	
 	// player properties 
 	var player_props = {
-		rel_x: -250,
-		rel_y: 20,
-		step: 20,
+		rel_x: -1060,
+		rel_y: 250,
+		step: 10,
 		top: 0,
 		left:0,
 		width: player[0].getBoundingClientRect().width 
 	}
+
+	var viewport_coords = {
+		x: 0,
+		y: 0,
+		prev_x:0,
+		prev_y: 0
+	}
+	
+
+	update_viewPort_coords(1)
 	
 	// movement
 	$(document).keydown(function(e){
@@ -82,13 +107,89 @@ $(document).ready(function(){
 			history.push([player_props.rel_x, player_props.rel_y]);
 		}else{
 			[[player_props.rel_x, player_props.rel_y]] = history.slice(-3, -2);
-			TweenMax.to(player, .5,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
+			TweenMax.to(player, .1,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 			history.push([player_props.rel_x, player_props.rel_y]);
 
+		}
+		update_viewPort_coords(0);
+
+	}
+
+	function update_viewPort_coords(init){
+		// console.log('called')
+		var player_rect = player[0].getBoundingClientRect();
+		var parent_rect = $('#rect2261')[0].getBoundingClientRect();
+		viewport_coords.x = player_rect.left - parent_rect.left - $(window).width()/2 ;
+		viewport_coords.y = player_rect.top - parent_rect.top - $(window).height()/2 ;
+		
+		// boundary conditions
+		// console.log(parent_rect.top + viewport_coords.y - viewport_coords.prev_y > 0)
+		// console.log(parent_rect.top, viewport_coords.y - viewport_coords.prev_y)
+		if(parent_rect.top - viewport_coords.y + viewport_coords.prev_y > 0){
+			// console.log(viewport_coords.y)
+			viewport_coords.y = viewport_coords.prev_y + parent_rect.top;
+			// console.log(viewport_coords.y)
+		}
+		else if(parent_rect.bottom - viewport_coords.y + viewport_coords.prev_y < $(window).height()){
+			// console.log('called', parent_rect)
+			viewport_coords.y = - $(window).height() + viewport_coords.prev_y + parent_rect.bottom;
+		}
+
+		if(parent_rect.left - viewport_coords.x + viewport_coords.prev_x > 0){
+			// console.log(viewport_coords.y)
+			viewport_coords.x = viewport_coords.prev_x + parent_rect.left;
+			// console.log(viewport_coords.y)
+		}
+		else if(parent_rect.right - viewport_coords.x + viewport_coords.prev_x < $(window).width()){
+			console.log('called', parent_rect)
+			viewport_coords.x = - $(window).width() + viewport_coords.prev_x + parent_rect.right;
+		}
+
+
+		
+		if(init){
+
+			viewport_coords.prev_x = viewport_coords.x;
+			viewport_coords.prev_y = viewport_coords.y
+
+			svg[0].attributes.getNamedItem("viewBox").value = ( viewport_coords.prev_x+ " " + viewport_coords.prev_y + " " + $(window).width()+ " "+ $(window).height());
+		}
+		else{
+			TweenMax.to(viewport_coords,3, {
+		      prev_x: viewport_coords.x,
+		 	  prev_y: viewport_coords.y, 
+			  onUpdate: function () {
+			    svg[0].attributes.getNamedItem("viewBox").value = ( viewport_coords.prev_x+ " " + viewport_coords.prev_y + " " + $(window).width()+ " "+ $(window).height());
+			  },
+			  ease:Circ.easeOut
+			});
 		}
 
 	}
 
+	// function animate_viewport(){
+	// 	// $(svg[0].attributes.getNamedItem("viewBox")).animate({'value': viewport_coords.x+ " " +viewport_coords.y + " " + $(window).width()+ " "+ $(window).height()});
+	// 	if(viewport_coords.prev_x !=viewport_coords.x ||viewport_coords.prev_y != viewport_coords.y){
+	// 		var initial_x = viewport_coords.prev_x;
+	// 		var initial_y = viewport_coords.prev_y;
+	// 		viewport_coords.prev_x = viewport_coords.x;
+	// 		viewport_coords.prev_y = viewport_coords.y
+
+	// 		TweenMax.to(, 5, {
+	// 		      var: 100, 
+	// 		      onUpdate: function () {
+	// 		          console.log(Math.ceil(counter.var));
+	// 		      },
+	// 		      ease:Circ.easeOut
+	// 		  });
+
+	// 	}
+
+	// 	svg[0].attributes.getNamedItem("viewBox").value = (viewport_coords.x+ " " +viewport_coords.y + " " + $(window).width()+ " "+ $(window).height());
+	// 	requestAnimationFrame(animate_viewport)
+	// }
+
+	// animate_viewport();
 	
 	// returns true if  enclosing
 	function checkEnclosed(player, container){
@@ -109,7 +210,7 @@ $(document).ready(function(){
 	*	Nearest building
 	*
 	*****/
-	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#ClockTower'), $('#malA'), $('#BirlaMemorial'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#_Group_24'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB')];
+	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#ClockTower'), $('#malA'), $('#g3320'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#XMLID_1785_'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB')];
 
 	function nearest_distance(player, container){
 		var player_rect = player.getBoundingClientRect();
@@ -142,15 +243,15 @@ $(document).ready(function(){
 
 		$('#dev_info span').text(sorted[0][0]);
 		
-		if($('#building_names').text() != current){
-			$('#building_names').fadeOut(200);
-			var k = setTimeout(function(){
-				$('#building_names').text(current);
-				$('#building_names').css({'top': ($('#'+ sorted[0][0]).offset().top + $('#'+ sorted[0][0])[0].getBoundingClientRect().height/2 - $('#building_names').height()/2), 'left': ($('#'+ sorted[0][0]).offset().left + $('#'+ sorted[0][0])[0].getBoundingClientRect().width/2 - $('#building_names').width()/2)});
-				$('#building_names').fadeIn();
-			},200);
+		// if($('#building_names').text() != current){
+		// 	$('#building_names').fadeOut(200);
+		// 	var k = setTimeout(function(){
+		// 		$('#building_names').text(current);
+		// 		$('#building_names').css({'top': ($('#'+ sorted[0][0]).offset().top + $('#'+ sorted[0][0])[0].getBoundingClientRect().height/2 - $('#building_names').height()/2), 'left': ($('#'+ sorted[0][0]).offset().left + $('#'+ sorted[0][0])[0].getBoundingClientRect().width/2 - $('#building_names').width()/2)});
+		// 		$('#building_names').fadeIn();
+		// 	},200);
 
-		}
+		// }
 			
 	}, 1000);
 

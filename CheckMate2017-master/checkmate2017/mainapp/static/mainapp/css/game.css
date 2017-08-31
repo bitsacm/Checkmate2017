@@ -1,0 +1,53 @@
+body{
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	height: 100vh;
+	width: 100vw;
+}
+
+#main_header{
+	position: absolute;
+	background: rgba(0,0,0,.2);
+	color: #fff;
+	width: 100vw;
+	display: flex;
+	-webkit-justify-content: space-between;
+	        justify-content: space-between;
+	padding: 0 50px;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+}
+
+#main_header nav {
+	display: flex;
+	align-items: center;
+}
+
+#main_header nav li{
+	list-style: none;
+	
+}
+
+#main_header nav li a{
+	text-decoration: none;
+	color: #fff;
+	background: #9c283e;
+	padding: 10px;
+	-webkit-border-radius: 6px;
+	        border-radius: 6px;
+	cursor: pointer;
+}
+
+#svg_container{
+	width: 100vw;
+	/*height: 100vh;*/
+	overflow: hidden;
+}
+
+
+#svg_container g[data-name="statue"]{
+	z-index: 10;
+}
+
