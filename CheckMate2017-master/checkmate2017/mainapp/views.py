@@ -99,7 +99,7 @@ def game(request):
             buildings = Building.objects.all()
             d={}
             if 'bquery' in request.POST:
-            	bquery = request.POST['bquery']
+                bquery = request.POST['bquery']
                 bl = Building.objects.get(building_name=bquery)
                 qs = Question.objects.filter(building_context=bl)
                 for i in qs:
