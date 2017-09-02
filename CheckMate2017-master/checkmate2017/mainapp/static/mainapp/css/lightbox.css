@@ -34,7 +34,7 @@
 	justify-content: space-between;
 	align-items: center;
 	padding: 0 30px;
-	
+
 }
 
 #backdrop .close{
@@ -46,7 +46,7 @@
 	text-align: center;
 	color: #fff;
 	cursor: pointer;
-	
+
 	border: 1px solid #aaa;
 	background: #aaa;
 	border-radius: 50%;
@@ -58,4 +58,8 @@
 	font-size: 30px;
 	color: #676767;
 }
-
+#content p{
+	width: 100%;
+	align-content: center;
+	text-align: center;
+}
