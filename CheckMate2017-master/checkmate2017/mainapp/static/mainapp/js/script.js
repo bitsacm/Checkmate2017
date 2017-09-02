@@ -2,12 +2,13 @@
 $(document).ready(function(){
 
 	// developer_info
-	// $('body').append('<div id="dev_info"><h1>#prototype</h1><span></span></div>');
+	$('body').prepend('<div id="dev_info"><span></span></div>');
 	
 
 	// names on buildings
 	$('body').append('<div id="building_names"></div>');
 	// $('#building_names').css({'position': 'absolute','top': 0, 'left':0, 'width': 'fit-content', 'background': 'rgba(0,0,0,0.2)', 'color': '#eee', 'fontSize': '10px', 'padding': '2px', 'borderRadius': '6px'});
+
 
 	//fancy colors
 	$('body').css('backgroundColor', 'rgba(210, 186, 2, 0.14)');
@@ -48,7 +49,7 @@ $(document).ready(function(){
 	var player_props = {
 		rel_x: -1060,
 		rel_y: 250,
-		step: 10,
+		step: 20,
 		top: 0,
 		left:0,
 		width: player[0].getBoundingClientRect().width 
@@ -85,16 +86,17 @@ $(document).ready(function(){
 	})
 	
 	// storing each state
-	var history = [[-250, 20], [-250, 20]];
+	var history = [inital_pos, inital_pos];
+	var states = [true, true];
 
 	// render animation
 	function render(top, left){
 		var inRoad = false;
-
+		var notInCircle = false;
 		player_props.rel_x +=  left;
 		player_props.rel_y +=  top;
 	
-		TweenMax.to(player, .5,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
+		TweenMax.to(player, .2,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 
 		roads.each(function(ind, ele){
 			if(checkEnclosed(player[0], $(ele)[0])){
@@ -102,10 +104,27 @@ $(document).ready(function(){
 				old_road = $(ele);
 			}
 		})
+
+		notInCircle = checkNotAboutToBeEnclosed(player[0], $('#gandhi_circle')[0]) && checkNotAboutToBeEnclosed(player[0], $('#patel_circle')[0]);
+
+		var state = (inRoad && notInCircle);
+		states.push(state);
 		
-		if(inRoad){
+		var stuck = checkStuck(states.slice(-3));
+
+		if(state && !stuck){
 			history.push([player_props.rel_x, player_props.rel_y]);
-		}else{
+		}else if(stuck){
+
+			var i = states.lastIndexOf(true);
+			var j = states.slice(j).lastIndexOf(true);
+			[[player_props.rel_x, player_props.rel_y]] = history.slice(j, j+1);
+			// console.log([[player_props.rel_x, player_props.rel_y]] = history.slice(i, i+1))
+			TweenMax.to(player, .1,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
+			console.log('moving')
+			history.push([player_props.rel_x, player_props.rel_y]);
+		}
+		else{
 			[[player_props.rel_x, player_props.rel_y]] = history.slice(-3, -2);
 			TweenMax.to(player, .1,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 			history.push([player_props.rel_x, player_props.rel_y]);
@@ -113,6 +132,10 @@ $(document).ready(function(){
 		}
 		update_viewPort_coords(0);
 
+	}
+
+	function checkStuck(states){
+		return (states.indexOf(true) == -1);
 	}
 
 	function update_viewPort_coords(init){
@@ -197,6 +220,10 @@ $(document).ready(function(){
 		var container_rect = container.getBoundingClientRect();
 
 		// boundary checking
+		return checkBoundary(player_rect, container_rect);
+	}
+
+	function checkBoundary(player_rect, container_rect){
 		var cond_right = ((player_rect.right) >(container_rect.left ) && (player_rect.right ) < container_rect.right),
 		cond_left = 	((player_rect.left) > container_rect.left && (player_rect.left) < container_rect.right),
 		cond_top = 	((player_rect.top)> container_rect.top) && ((player_rect.top) < container_rect.bottom),
@@ -205,12 +232,32 @@ $(document).ready(function(){
 		return (cond_right && cond_left && cond_top && cond_bottom)
 	}
 
+	//hardest part : naming the function
+	function checkNotAboutToBeEnclosed(player, container){
+		var player_rect = player.getBoundingClientRect();
+		var container_rect = container.getBoundingClientRect();
+		var mutable_rect = {};
+
+		for(i in container_rect){
+			mutable_rect[i] = container_rect[i]; //because container_rect is frozen by default :O !
+		}
+
+		var neigbourhood = 30;
+		
+		mutable_rect.left = container_rect.left - neigbourhood;
+		mutable_rect.right = container_rect.right + neigbourhood;
+		mutable_rect.top = container_rect.top - neigbourhood;
+		mutable_rect.bottom = container_rect.bottom + neigbourhood;
+		
+		return !(checkBoundary(player_rect, mutable_rect))
+	}	
+
 	/*****
 	*
 	*	Nearest building
 	*
 	*****/
-	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#ClockTower'), $('#malA'), $('#g3320'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#XMLID_1785_'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB')];
+	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#ClockTower'), $('#malA'), $('#g3320'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#XMLID_1785_'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB'), $('#XMLID_2622_')];
 
 	function nearest_distance(player, container){
 		var player_rect = player.getBoundingClientRect();
@@ -239,9 +286,16 @@ $(document).ready(function(){
 			return parseInt(a[1]) - parseInt(b[1]);
 		})
 		var current = sorted[0][0];
+		if(current=="XMLID_1785_"){
+			current = "Library";
+		}else if(current=="g3320"){
+			current = "BirlaMemorial"; 
+		}else if(current =="XMLID_2622_"){
+			current = "Workshop";
+		}
 		window.selected = current;
 
-		$('#dev_info span').text(sorted[0][0]);
+		$('#dev_info span').text(current);
 		
 		// if($('#building_names').text() != current){
 		// 	$('#building_names').fadeOut(200);
@@ -254,6 +308,8 @@ $(document).ready(function(){
 		// }
 			
 	}, 1000);
+
+	svg.append(' <use id="use1" xlink:href="#player_girl" /> <use id="use2" xlink:href="#statue1" />')
 
 
 });

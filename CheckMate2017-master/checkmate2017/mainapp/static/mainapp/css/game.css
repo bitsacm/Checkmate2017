@@ -4,6 +4,7 @@ body{
 	overflow: hidden;
 	height: 100vh;
 	width: 100vw;
+	font-family: arial, verdana;
 }
 
 #main_header{
@@ -47,7 +48,43 @@ body{
 }
 
 
-#svg_container g[data-name="statue"]{
+/*#svg_container #statue1 *{
 	z-index: 10;
 }
+#svg_container #player_girl *{
+	z-index: 1;
+}*/
 
+#header_info{
+	display: flex;
+	/*width: 400px;*/
+	align-items: center;
+}
+
+#header_info h2{
+	font-size: 18px;
+	color: #ddd;
+	text-align: center;
+	line-height: 50px;
+	
+}
+
+#dev_info{
+	position: absolute;
+	bottom: 30px;
+	right: 30px;
+	min-width: 100px;
+	/*line-height: 20px;*/
+	background: #eee;
+	text-align: center;
+	opacity: 0.7;
+	padding: 5px;
+	font-size: 14px;
+	border-radius: 4px;
+}
+
+#score{
+	line-height: 50px;
+	padding: 0 20px;
+	color: #eee;
+}
