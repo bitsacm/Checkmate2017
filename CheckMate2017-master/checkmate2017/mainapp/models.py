@@ -15,8 +15,8 @@ class UserProfile(models.Model):
 
 	score = models.IntegerField(default=0)
 	ip_address = models.CharField(null=True,max_length=20)
-	status = models.CharField(max_length=40,default="0000000000000000000000000")
-	build_solved= models.CharField(max_length=30,default="00000000000000000000000000")
+	status = models.CharField(max_length=80,default="00000000000000000000000000000000000000000000000000000")
+	build_solved= models.CharField(max_length=80,default="0000000000000000000000000000000000000000000000000000000")
 	wrong_responses= models.IntegerField(default=0)
 	logstat=models.IntegerField(null=False, choices=((0,'0'),(1,'1')),default=0)#0 for logged out, 1 for logged in
 

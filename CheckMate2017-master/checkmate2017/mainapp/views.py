@@ -112,6 +112,7 @@ def game(request):
             bs= list(up.build_solved)
             up.score=0
             for q in question:
+                print(q.pk-1)
                 ch = sl[q.pk-1]
                 if ch=='2':
                     up.score+=100
