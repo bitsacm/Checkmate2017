@@ -88,6 +88,7 @@ $(document).ready(function(){
 	// storing each state
 	var history = [inital_pos, inital_pos];
 	var states = [true, true];
+	var prev_road = null;
 
 	// render animation
 	function render(top, left){
@@ -96,14 +97,20 @@ $(document).ready(function(){
 		player_props.rel_x +=  left;
 		player_props.rel_y +=  top;
 	
-		TweenMax.to(player, .2,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
+		TweenMax.to(player, .4,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 
-		roads.each(function(ind, ele){
-			if(checkEnclosed(player[0], $(ele)[0])){
-				inRoad = true;
-				old_road = $(ele);
-			}
-		})
+		if(prev_road){
+			inRoad = checkEnclosed(player[0], prev_road);
+		}
+		if(!inRoad){
+			roads.each(function(ind, ele){
+				if(checkEnclosed(player[0], $(ele)[0])){
+					inRoad = true;
+					
+					prev_road = ele;
+				}
+			})
+		}
 
 		notInCircle = checkNotAboutToBeEnclosed(player[0], $('#gandhi_circle')[0]) && checkNotAboutToBeEnclosed(player[0], $('#patel_circle')[0]);
 
@@ -115,16 +122,24 @@ $(document).ready(function(){
 		if(state && !stuck){
 			history.push([player_props.rel_x, player_props.rel_y]);
 		}else if(stuck){
-
-			var i = states.lastIndexOf(true);
-			var j = states.slice(j).lastIndexOf(true);
-			[[player_props.rel_x, player_props.rel_y]] = history.slice(j, j+1);
-			// console.log([[player_props.rel_x, player_props.rel_y]] = history.slice(i, i+1))
+			var string = "";
+			states.map(function(ele){
+				if(ele){
+					string += "1";
+				}else{
+					string += "0";
+				}
+			})
+			var j = string.lastIndexOf("11111");
+			console.log(j , states, history);
+			[[player_props.rel_x, player_props.rel_y]] = history.slice(j+1, j+2);
+			
 			TweenMax.to(player, .1,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 			console.log('moving')
 			history.push([player_props.rel_x, player_props.rel_y]);
 		}
 		else{
+
 			[[player_props.rel_x, player_props.rel_y]] = history.slice(-3, -2);
 			TweenMax.to(player, .1,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 			history.push([player_props.rel_x, player_props.rel_y]);
