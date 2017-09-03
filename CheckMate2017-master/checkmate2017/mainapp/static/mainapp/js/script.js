@@ -97,7 +97,7 @@ $(document).ready(function(){
 		player_props.rel_x +=  left;
 		player_props.rel_y +=  top;
 	
-		TweenMax.to(player, .4,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
+		TweenMax.to(player, .2,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 
 		if(prev_road){
 			inRoad = checkEnclosed(player[0], prev_road);
