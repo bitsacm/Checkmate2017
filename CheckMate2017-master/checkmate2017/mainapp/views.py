@@ -129,14 +129,13 @@ def game(request):
 def question(request):
         print(request)
         up = UserProfile.objects.get(user=request.user)
-        print("initial",up.wrong_responses)
+        #print("initial",up.wrong_responses)
 
         sl= list(up.status)
         # print(sl)
         ansform=AnswerForm(request.POST)
         if request.method == 'POST' and 'pkvalue' in request.POST:
             # print("hello1")
-            print()
             if ansform.is_valid():
                 # print("a")
 
@@ -150,57 +149,62 @@ def question(request):
 
                 if ans is not None:
                     print(q.answer,ans)
-                    if (q.answer).lower().strip() == (ans.lower()).strip():
-                        sl[index]="2"
-                        up.status="".join(sl)
+                    if sl[index]=="2":
+                        return HttpResponse("Already attempted this question once!")
+                    else:
+                        if (q.answer).lower().strip() == (ans.lower()).strip():
+                            sl[index]="2"
+                            up.status="".join(sl)
+                            up.save()
+                            resp={
+                                'status':1,
+                            }
+                            print("inside_correct",up.wrong_responses)
+
+                        else :
+                            #sl[index]="3"
+                            up.status="".join(sl)
+                            up.wrong_responses+=1
+                            print(up.wrong_responses)
+                            up.save()
+                            resp={
+                                'status':2,
+                            }
+                            #print("inside_incorrect",up.wrong_responses)
+                        #print("outside",up.wrong_responses)
+
+                        up.score=0
+                        for qx in qs:
+                            ch = sl[int(qx.pk)-1]
+                            if ch=='2':
+                                up.score+=100
+                        up.score-=(up.wrong_responses*25)
                         up.save()
-                        resp={
-                            'status':1,
-                        }
-                        print("inside_correct",up.wrong_responses)
+                        skore=up.score
+                        resp['score']=skore
 
-                    else :
-                        sl[index]="3"
-                        up.status="".join(sl)
-                        up.wrong_responses+=1
-                        print(up.wrong_responses)
-                        up.save()
-                        resp={
-                            'status':2,
-                        }
-                        print("inside_incorrect",up.wrong_responses)
-                    print("outside",up.wrong_responses)
-
-                    up.score=0
-                    for qx in qs:
-                        ch = sl[int(qx.pk)-1]
-                        if ch=='2':
-                            up.score+=100
-                    up.score-=(up.wrong_responses*25)
-                    up.save()
-                    skore=up.score
-                    resp['score']=skore
-
-                up.status="".join(sl)
-                up.save()
-                # print(sl) 
-                return HttpResponse(json.dumps(resp), content_type = "application/json")
+                    up.status="".join(sl)
+                    up.save() 
+                    return HttpResponse(json.dumps(resp), content_type = "application/json")
             #return render(request,'mainapp/questions.html',{'q':q,'ansform':ansform,})
 
 
-def question_list(request, build_id):
-    up = UserProfile.objects.get(user=request.user)
-    sl=list(up.status)
-    building=Building.objects.get(pk=build_id)
-    questions = Question.objects.filter(building_context=building)
-    return render(request,'mainapp/question_list.html',{'questions':questions,'sl':sl,'building':building})
+#def question_list(request, build_id):
+    #up = UserProfile.objects.get(user=request.user)
+    #sl=list(up.status)
+    #building=Building.objects.get(pk=build_id)
+    #questions = Question.objects.filter(building_context=building)
+    #return render(request,'mainapp/question_list.html',{'questions':questions,'sl':sl,'building':building})
 
 def congrats(request):
+    if request.user.is_authenticated():
+        up = UserProfile.objects.get(user=request.user)
+        up.logstat=1
+        up.save()
+    else:
+        return HttpResponse("You chose to end the game! you cannot log back in anymore!")
     return render(request,'mainapp/congrats.html')
 
 def logout(request):
-    up = UserProfile.objects.get(user=request.user)
-    up.logstat=1
-    up.save()
     django_logout(request)
     return render(request, 'mainapp/index.html')

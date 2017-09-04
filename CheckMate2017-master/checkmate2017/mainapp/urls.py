@@ -10,5 +10,5 @@ urlpatterns = [
     url(r'^congrats$', views.congrats, name = 'congrats'),
     url(r'^logout$', views.logout, name = 'logout'),
     url(r'^question$',views.question,name='question'),
-    url(r'^question_list/(?P<build_id>\d+)/$',views.question_list,name='question_list'),
+    #url(r'^question_list/(?P<build_id>\d+)/$',views.question_list,name='question_list'),
 ]

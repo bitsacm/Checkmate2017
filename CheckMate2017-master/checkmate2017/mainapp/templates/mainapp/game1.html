@@ -1,8 +1,0 @@
-<h1>ACM-Checkmate'17</h1>
-<h2>Logged in as:{{up.teamname}}  Current score is: {{up.score}}</h2>
-
-
-	{% for b in buildings %}
-		<a href="question_list/{{b.pk}}">{{b.building_name}}</a> <h7>Total questions:{{b.q_total}}</h7>
-		<br>
-	{% endfor %}
