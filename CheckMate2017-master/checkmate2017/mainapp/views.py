@@ -88,7 +88,6 @@ def login(request):
             return HttpResponse('The game is not started yet, or it has already ended')
 
 def game(request):
-    print(request)
     if not (request.user).is_authenticated() or (request.user.username) == "admin":
         return redirect('mainapp:login')
     else:
@@ -104,7 +103,6 @@ def game(request):
                 qs = Question.objects.filter(building_context=bl)
                 for i in qs:
                     d[i.pk-1]=json.loads(serializers.serialize('json', [i,]))
-                # print ("struct=",struct)
                 return HttpResponse(json.dumps(d), content_type = "application/json")
 
             question = Question.objects.all()
@@ -112,57 +110,82 @@ def game(request):
             bs= list(up.build_solved)
             up.score=0
             for q in question:
-                print(q.pk-1)
                 ch = sl[q.pk-1]
                 if ch=='2':
                     up.score+=100
             up.score-= (up.wrong_responses*25)
         
-            for b in buildings:
-                bs[b.pk-1]='0'
-                qe=Question.objects.filter(building_context=b)
-                for qi in qe:
-                    if sl[qi.pk-1]=='2':
-                        bs[b.pk-1]=(int(bs[b.pk-1])+1).__str__()
+            #for b in buildings:
+                #bs[b.pk-1]='0'
+                #qe=Question.objects.filter(building_context=b)
+                #for qi in qe:
+                    #if sl[qi.pk-1]=='2':
+                        #bs[b.pk-1]=(int(bs[b.pk-1])+1).__str__()
 
             up.build_solved="".join(bs)
             up.save()
             return render(request, 'mainapp/game.html',{'up':up,'bs':bs,'buildings':buildings})
 
-def question(request,ques_id):
-    index = int(ques_id) -1
-    up = UserProfile.objects.get(user=request.user)
-    q = Question.objects.get(pk=ques_id)
-    sl= list(up.status)
-    if sl[index]=="2":
-        return redirect('mainapp:game')
-    else:
-        sl[index]="1"
-        up.status="".join(sl)
+def question(request):
+        print(request)
+        up = UserProfile.objects.get(user=request.user)
+        print("initial",up.wrong_responses)
+
+        sl= list(up.status)
+        # print(sl)
         ansform=AnswerForm(request.POST)
-        if request.method == 'POST':
+        if request.method == 'POST' and 'pkvalue' in request.POST:
+            # print("hello1")
+            print()
             if ansform.is_valid():
+                # print("a")
+
+                ques_id=request.POST['pkvalue']
+                index = int(ques_id)-1
+                q = Question.objects.get(pk=ques_id)
                 data=ansform.cleaned_data
                 ans= data['answer']
+                qs=Question.objects.all()
+                resp={}
+
                 if ans is not None:
-                    if q.answer == (ans.lower()).strip():
+                    print(q.answer,ans)
+                    if (q.answer).lower().strip() == (ans.lower()).strip():
                         sl[index]="2"
                         up.status="".join(sl)
                         up.save()
-                        return redirect('mainapp:game')
+                        resp={
+                            'status':1,
+                        }
+                        print("inside_correct",up.wrong_responses)
+
                     else :
                         sl[index]="3"
                         up.status="".join(sl)
                         up.wrong_responses+=1
+                        print(up.wrong_responses)
                         up.save()
-            #if sl[index]== "1":
-                #up.skipped+=1
-            up.status="".join(sl)
-            up.save() 
-            return render(request,'mainapp/questions.html',{'q':q,'ansform':ansform,})
-        else:
-            ansform=AnswerForm(request.POST)
-            return render(request,'mainapp/questions.html',{'q':q,'ansform':ansform,})
+                        resp={
+                            'status':2,
+                        }
+                        print("inside_incorrect",up.wrong_responses)
+                    print("outside",up.wrong_responses)
+
+                    up.score=0
+                    for qx in qs:
+                        ch = sl[int(qx.pk)-1]
+                        if ch=='2':
+                            up.score+=100
+                    up.score-=(up.wrong_responses*25)
+                    up.save()
+                    skore=up.score
+                    resp['score']=skore
+
+                up.status="".join(sl)
+                up.save()
+                # print(sl) 
+                return HttpResponse(json.dumps(resp), content_type = "application/json")
+            #return render(request,'mainapp/questions.html',{'q':q,'ansform':ansform,})
 
 
 def question_list(request, build_id):

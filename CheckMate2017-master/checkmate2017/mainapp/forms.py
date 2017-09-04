@@ -20,3 +20,4 @@ class LoginForm(forms.Form):
 
 class AnswerForm(forms.Form):
 	answer=forms.CharField(max_length=100)
+	pkvalue=forms.CharField(max_length=100)

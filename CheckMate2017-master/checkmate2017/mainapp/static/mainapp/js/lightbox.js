@@ -54,7 +54,7 @@ $.ajax(a);
 }
 
 function loadQues() {
-	var answer_form="<br/><form action='#' id='form'><input type='text' placeholder='Answer' ><br/><input type='submit' label='submit' ></form><button onclick='lightbox()'>Back</button>";//answer form html
+	var answer_form="<br/><input id= 'ans' name='answer' type='text' placeholder='Answer'><br/> <button onclick='mysubmit()'>Submit</button> <button onclick='lightbox()'>Back</button>";//answer form html
 	var content=document.getElementById('content');
 	var selectList=document.getElementById('qlist');
 	var questionVal=selectList.options[selectList.selectedIndex].value;
@@ -62,10 +62,39 @@ function loadQues() {
 	qVal=questionVal;
 }
 
-$("#form").submit( function(eventObj) {
-		$('<input/>').attr('type', 'hidden')
-				.attr('name', "pkvalue")
-				.attr('value', pks["pk"+qVal])
-				.appendTo('#form');
-		return true;
-});
+function mysubmit() {
+	var form_data={
+		csrfmiddlewaretoken:document.cookie.split("=")[1],
+		pkvalue:pks["pk"+qVal],
+		answer:$("#ans").val()
+	};
+
+	var request={
+		url:"/question",
+		type:"POST",
+		data:form_data,
+		method:'POST',
+		success: function(msg)
+		{
+			console.log(msg);
+			//update points
+			$("#score").html("Points:"+msg["score"])
+			//show correct
+			if(msg["status"]=="1")
+				alert("correct")
+			else
+				alert("incorrect")
+			
+		},
+		error: function(xhr)
+		{
+			//update points
+			//show correct
+			//hide box
+			console.log(xhr);
+		}
+
+	};
+
+	var response=$.ajax(request);
+  }
