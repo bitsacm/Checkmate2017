@@ -76,6 +76,7 @@ $(document).ready(function(){
 		player_props.top = 0;
 		player_props.left = 0;
 		// console.log(e.keyCode);
+		// console.log(xopen)
 		if((e.keyCode>40 || e.keyCode<37 ) && e.keyCode!=32)return;
 		else if(e.keyCode == 38){
 			player_props.top = -(player_props.step);
@@ -85,7 +86,8 @@ $(document).ready(function(){
 			player_props.left = player_props.step;
 		}else if(e.keyCode == 37){
 			player_props.left = -(player_props.step);
-		}else if(e.keyCode == 32){
+		}else if(e.keyCode == 32 && !(xopen)){
+			xopen = true;
 			return window.lightbox();
 		}
 		// player_props.rect = player[0].getBoundingClientRect();
@@ -118,14 +120,14 @@ $(document).ready(function(){
 		if(prev_road){
 			inRoad = checkEnclosed(player_props.new_rect, prev_road)
 		}
-		console.log(inRoad)
+		// console.log(inRoad)
 
 		if(!inRoad){
 			roads.each(function(ind, ele){
 					if(checkEnclosed(player_props.new_rect, ele)){
 						inRoad = true;
 						prev_road = ele;
-						console.log(ele);
+						// console.log(ele);
 					}
 			})
 		}
@@ -135,14 +137,14 @@ $(document).ready(function(){
 		// console.log(inRoad, notInCircle);
 		var state = (inRoad && notInCircle);
 		states.push(state);
-		console.log(state)
+		// console.log(state)
 				
 		if(state && move){
 			player_props.rel_x +=  player_props.left;
 			player_props.rel_y +=  player_props.top;
 			render(player_props);
 		}else{
-			console.log('bounce');
+			// console.log('bounce');
 			[[player_props.rel_x, player_props.rel_y]] = history.slice(-5, -4);
 			render(player_props);
 		}

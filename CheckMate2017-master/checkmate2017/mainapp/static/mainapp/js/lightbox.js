@@ -2,6 +2,8 @@ var no_of_questions=0;//length of question array per building
 var questions={};//question list
 var pks={};
 var qVal;
+
+var xopen = false;
 $(document).ready(function(){
 	$('#backdrop').fadeOut(0);
 
@@ -10,6 +12,7 @@ $(document).ready(function(){
 
 	$('#backdrop .close').click(function(){
 		$('#backdrop').fadeOut();
+		xopen = false;
 	})
 
 })
