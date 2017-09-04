@@ -19,6 +19,7 @@ $(document).ready(function(){
 	// getNamedItem('viewbox').value
 	
 	var player = getPlayer();
+
 	player.fadeIn();
 	window.playground = svg;
 
@@ -49,11 +50,16 @@ $(document).ready(function(){
 	var player_props = {
 		rel_x: -1060,
 		rel_y: 250,
-		step: 20,
+		step: 10,
 		top: 0,
 		left:0,
-		width: player[0].getBoundingClientRect().width 
+		width: player[0].getBoundingClientRect().width,
+		rect: player[0].getBoundingClientRect(),
+		new_rect: {}
 	}
+	// console.log(player[0].getBoundingClientRect())
+	var relative_x = player_props.rel_x;
+	var relative_y = player_props.rel_y;
 
 	var viewport_coords = {
 		x: 0,
@@ -82,70 +88,84 @@ $(document).ready(function(){
 		}else if(e.keyCode == 32){
 			return window.lightbox();
 		}
-		render(player_props.top,player_props.left);
+		// player_props.rect = player[0].getBoundingClientRect();
+		// move();
+		// render(player_props.top,player_props.left);
 	})
 	
-	// storing each state
-	var history = [inital_pos, inital_pos];
-	var states = [true, true];
 	var prev_road = null;
+	var history = [inital_pos, inital_pos,inital_pos, inital_pos,inital_pos];
+	var states = [true, true, true, true, true];
 
-	// render animation
-	function render(top, left){
+	function move(player_props){
 		var inRoad = false;
 		var notInCircle = false;
-		player_props.rel_x +=  left;
-		player_props.rel_y +=  top;
-	
-		TweenMax.to(player, .2,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
+		for(i in player_props.rect){
+			player_props.new_rect[i] = player_props.rect[i]; 
+		}
+
+		var move = player_props.top || player_props.left;
+		if(!move){
+			return;
+		}
+
+		player_props.new_rect.top += player_props.top;
+		player_props.new_rect.bottom -= player_props.top;
+		player_props.new_rect.left += player_props.left;
+		player_props.new_rect.right -= player_props.left;
+		// console.log(player_props.new_rect)
 
 		if(prev_road){
-			inRoad = checkEnclosed(player[0], prev_road);
+			inRoad = checkEnclosed(player_props.new_rect, prev_road)
 		}
+		console.log(inRoad)
+
 		if(!inRoad){
 			roads.each(function(ind, ele){
-				if(checkEnclosed(player[0], $(ele)[0])){
-					inRoad = true;
-					
-					prev_road = ele;
-				}
+					if(checkEnclosed(player_props.new_rect, ele)){
+						inRoad = true;
+						prev_road = ele;
+						console.log(ele);
+					}
 			})
 		}
 
-		notInCircle = checkNotAboutToBeEnclosed(player[0], $('#gandhi_circle')[0]) && checkNotAboutToBeEnclosed(player[0], $('#patel_circle')[0]);
-
+		notInCircle = checkNotAboutToBeEnclosed(player_props.new_rect, $('#gandhi_circle')[0]) && checkNotAboutToBeEnclosed(player_props.new_rect, $('#patel_circle')[0]);
+		
+		// console.log(inRoad, notInCircle);
 		var state = (inRoad && notInCircle);
 		states.push(state);
+		console.log(state)
+				
+		if(state && move){
+			player_props.rel_x +=  player_props.left;
+			player_props.rel_y +=  player_props.top;
+			render(player_props);
+		}else{
+			console.log('bounce');
+			[[player_props.rel_x, player_props.rel_y]] = history.slice(-5, -4);
+			render(player_props);
+		}
+
+
+	}
+
+	// storing each state
+	
+
+
+	// render animation
+	function render(player_props){
 		
-		var stuck = checkStuck(states.slice(-3));
+		
+	
+		TweenMax.to(player, .4,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 
-		if(state && !stuck){
-			history.push([player_props.rel_x, player_props.rel_y]);
-		}else if(stuck){
-			var string = "";
-			states.map(function(ele){
-				if(ele){
-					string += "1";
-				}else{
-					string += "0";
-				}
-			})
-			var j = string.lastIndexOf("11111");
-			console.log(j , states, history);
-			[[player_props.rel_x, player_props.rel_y]] = history.slice(j+1, j+2);
-			
-			TweenMax.to(player, .1,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
-			console.log('moving')
-			history.push([player_props.rel_x, player_props.rel_y]);
-		}
-		else{
+		relative_y = player_props.rel_y;
+		relative_x = player_props.rel_x;
 
-			[[player_props.rel_x, player_props.rel_y]] = history.slice(-3, -2);
-			TweenMax.to(player, .1,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
-			history.push([player_props.rel_x, player_props.rel_y]);
-
-		}
-		update_viewPort_coords(0);
+		
+		history.push([player_props.rel_x, player_props.rel_y])
 
 	}
 
@@ -179,7 +199,7 @@ $(document).ready(function(){
 			// console.log(viewport_coords.y)
 		}
 		else if(parent_rect.right - viewport_coords.x + viewport_coords.prev_x < $(window).width()){
-			console.log('called', parent_rect)
+			// console.log('called', parent_rect)
 			viewport_coords.x = - $(window).width() + viewport_coords.prev_x + parent_rect.right;
 		}
 
@@ -199,39 +219,19 @@ $(document).ready(function(){
 			  onUpdate: function () {
 			    svg[0].attributes.getNamedItem("viewBox").value = ( viewport_coords.prev_x+ " " + viewport_coords.prev_y + " " + $(window).width()+ " "+ $(window).height());
 			  },
-			  ease:Circ.easeOut
+			  ease:Power0.easeNone,
 			});
 		}
 
 	}
 
-	// function animate_viewport(){
-	// 	// $(svg[0].attributes.getNamedItem("viewBox")).animate({'value': viewport_coords.x+ " " +viewport_coords.y + " " + $(window).width()+ " "+ $(window).height()});
-	// 	if(viewport_coords.prev_x !=viewport_coords.x ||viewport_coords.prev_y != viewport_coords.y){
-	// 		var initial_x = viewport_coords.prev_x;
-	// 		var initial_y = viewport_coords.prev_y;
-	// 		viewport_coords.prev_x = viewport_coords.x;
-	// 		viewport_coords.prev_y = viewport_coords.y
+	var view = setInterval(function(){
+		update_viewPort_coords(0);
+	}, 1000)
 
-	// 		TweenMax.to(, 5, {
-	// 		      var: 100, 
-	// 		      onUpdate: function () {
-	// 		          console.log(Math.ceil(counter.var));
-	// 		      },
-	// 		      ease:Circ.easeOut
-	// 		  });
-
-	// 	}
-
-	// 	svg[0].attributes.getNamedItem("viewBox").value = (viewport_coords.x+ " " +viewport_coords.y + " " + $(window).width()+ " "+ $(window).height());
-	// 	requestAnimationFrame(animate_viewport)
-	// }
-
-	// animate_viewport();
-	
 	// returns true if  enclosing
-	function checkEnclosed(player, container){
-		var player_rect = player.getBoundingClientRect();
+	function checkEnclosed(player_rect, container){
+		// var player_rect = player.getBoundingClientRect();
 		var container_rect = container.getBoundingClientRect();
 
 		// boundary checking
@@ -248,8 +248,8 @@ $(document).ready(function(){
 	}
 
 	//hardest part : naming the function
-	function checkNotAboutToBeEnclosed(player, container){
-		var player_rect = player.getBoundingClientRect();
+	function checkNotAboutToBeEnclosed(player_rect, container){
+		// var player_rect = player.getBoundingClient	Rect();
 		var container_rect = container.getBoundingClientRect();
 		var mutable_rect = {};
 
@@ -257,7 +257,7 @@ $(document).ready(function(){
 			mutable_rect[i] = container_rect[i]; //because container_rect is frozen by default :O !
 		}
 
-		var neigbourhood = 30;
+		var neigbourhood = 0;
 		
 		mutable_rect.left = container_rect.left - neigbourhood;
 		mutable_rect.right = container_rect.right + neigbourhood;
@@ -289,7 +289,22 @@ $(document).ready(function(){
 		return Math.sqrt(Math.pow(Math.min(left, right), 2) +  Math.pow(Math.min(top, bottom),2));
 	}
 
-	var display_buildings = setInterval(function(){
+	var gamePlay = setInterval(function(){
+		player_props.rel_y = relative_y;
+		player_props.rel_x = relative_x;
+		player_props.rect = player[0].getBoundingClientRect();
+		// console.log(player_props.top, player_props.left)
+
+		var final_player_props = {};
+
+		for(i in player_props){
+			final_player_props[i] = player_props[i];
+		}
+
+		move(final_player_props);
+		player_props.top = 0;
+		player_props.left = 0;
+
 		var distances = [];
 		buildings.forEach(function(ele, ind){
 			// console.log(nearest_distance(player[0], ele[0]).toString());
@@ -311,18 +326,9 @@ $(document).ready(function(){
 		window.selected = current;
 
 		$('#dev_info span').text(current);
-		
-		// if($('#building_names').text() != current){
-		// 	$('#building_names').fadeOut(200);
-		// 	var k = setTimeout(function(){
-		// 		$('#building_names').text(current);
-		// 		$('#building_names').css({'top': ($('#'+ sorted[0][0]).offset().top + $('#'+ sorted[0][0])[0].getBoundingClientRect().height/2 - $('#building_names').height()/2), 'left': ($('#'+ sorted[0][0]).offset().left + $('#'+ sorted[0][0])[0].getBoundingClientRect().width/2 - $('#building_names').width()/2)});
-		// 		$('#building_names').fadeIn();
-		// 	},200);
+	
 
-		// }
-			
-	}, 1000);
+	}, 100);
 
 	svg.append(' <use id="use1" xlink:href="#player_girl" /> <use id="use2" xlink:href="#statue1" />')
 
