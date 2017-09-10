@@ -37,7 +37,11 @@ def register(request):
                 try:
                     u.save()
                 except IntegrityError:
-                    return HttpResponse('Team name already registered or other conflicting entries')
+                    resp={
+                    'status': 1,
+                    'error': 'Team name already registered or other conflicting entries'
+                    }
+                    return HttpResponse(json.dumps(resp), content_type = "application/json")
                 up = UserProfile()
                 up.user = u
                 up.teamname = data['teamname1']
@@ -47,7 +51,11 @@ def register(request):
                 up.save()
                 return redirect('mainapp:login')
             else:
-                return HttpResponse("Failed! Invalid login attempt, make sure that you used your own BITS mail and id!")
+                resp={
+                'status':2,
+                'error':'Failed! Invalid login attempt, make sure that you used your own correct BITS mail and id!'
+                }
+                return HttpResponse(json.dumps(resp), content_type = "application/json")
         else:
             form=TeamForm(request.POST)
             return render(request,'mainapp/login.html',{'form':form})
@@ -64,7 +72,7 @@ def login(request):
         return redirect('mainapp:game')
     else:
         g=GameSwitch.objects.get(name='main')
-        if g.start_game and not g.end_game:
+        if g.start_game:
             tform=TeamForm(request.POST)
             lform = LoginForm(request.POST)
             if request.method == 'POST' and 'login-submit' in request.POST:
@@ -92,8 +100,16 @@ def game(request):
         return redirect('mainapp:login')
     else:
         up = UserProfile.objects.get(user=request.user)
+        switch=GameSwitch.objects.get(name='main')
+        if switch.end_game==1:
+            up.logstat=1
+            resp={
+            'status':0,
+            'error':'Time up!'
+            }
+            return HttpResponse(json.dumps(resp), content_type = "application/json")
         if up.logstat==1:
-            return HttpResponse("You have already logged out once!")
+            return redirect('mainapp:congrats')
         else:
             buildings = Building.objects.all()
             d={}
@@ -114,14 +130,6 @@ def game(request):
                 if ch=='2':
                     up.score+=100
             up.score-= (up.wrong_responses*25)
-        
-            #for b in buildings:
-                #bs[b.pk-1]='0'
-                #qe=Question.objects.filter(building_context=b)
-                #for qi in qe:
-                    #if sl[qi.pk-1]=='2':
-                        #bs[b.pk-1]=(int(bs[b.pk-1])+1).__str__()
-
             up.build_solved="".join(bs)
             up.save()
             return render(request, 'mainapp/game.html',{'up':up,'bs':bs,'buildings':buildings})
@@ -129,15 +137,10 @@ def game(request):
 def question(request):
         print(request)
         up = UserProfile.objects.get(user=request.user)
-        #print("initial",up.wrong_responses)
-
         sl= list(up.status)
-        # print(sl)
         ansform=AnswerForm(request.POST)
         if request.method == 'POST' and 'pkvalue' in request.POST:
-            # print("hello1")
             if ansform.is_valid():
-                # print("a")
 
                 ques_id=request.POST['pkvalue']
                 index = int(ques_id)-1
@@ -170,9 +173,6 @@ def question(request):
                             resp={
                                 'status':2,
                             }
-                            #print("inside_incorrect",up.wrong_responses)
-                        #print("outside",up.wrong_responses)
-
                         up.score=0
                         for qx in qs:
                             ch = sl[int(qx.pk)-1]
@@ -186,15 +186,7 @@ def question(request):
                     up.status="".join(sl)
                     up.save() 
                     return HttpResponse(json.dumps(resp), content_type = "application/json")
-            #return render(request,'mainapp/questions.html',{'q':q,'ansform':ansform,})
 
-
-#def question_list(request, build_id):
-    #up = UserProfile.objects.get(user=request.user)
-    #sl=list(up.status)
-    #building=Building.objects.get(pk=build_id)
-    #questions = Question.objects.filter(building_context=building)
-    #return render(request,'mainapp/question_list.html',{'questions':questions,'sl':sl,'building':building})
 
 def congrats(request):
     if request.user.is_authenticated():
