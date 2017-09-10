@@ -1,8 +1,8 @@
 // add id = player_girl to girl's g tag
 $(document).ready(function(){
 
-	// developer_info
-	$('body').prepend('<div id="dev_info"><span></span></div>');
+	// info
+	$('body #header_info').prepend('<div id="dev_info"><span></span></div>');
 	
 
 	// names on buildings
@@ -291,6 +291,8 @@ $(document).ready(function(){
 		return Math.sqrt(Math.pow(Math.min(left, right), 2) +  Math.pow(Math.min(top, bottom),2));
 	}
 
+	var old_building_id = null;
+
 	var gamePlay = setInterval(function(){
 		player_props.rel_y = relative_y;
 		player_props.rel_x = relative_x;
@@ -318,6 +320,14 @@ $(document).ready(function(){
 			return parseInt(a[1]) - parseInt(b[1]);
 		})
 		var current = sorted[0][0];
+		new_building_id = current;
+		if(old_building_id){
+			TweenMax.to($('#'+ old_building_id), .4 ,{scale: 1});
+		}
+		// $('#'+ current).css('transformOrigin', '0% 0%');
+		// TweenMax.to($('#'+ current), .4 ,{scale: 1.05});
+		old_building_id = current;
+
 		if(current=="XMLID_1785_"){
 			current = "Library";
 		}else if(current=="g3320"){
@@ -327,7 +337,7 @@ $(document).ready(function(){
 		}
 		window.selected = current;
 
-		$('#dev_info span').text(current);
+		$('#dev_info span').text('You have approached ' + current);
 	
 
 	}, 100);
