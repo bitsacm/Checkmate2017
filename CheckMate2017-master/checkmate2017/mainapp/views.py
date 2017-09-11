@@ -101,19 +101,21 @@ def game(request):
     else:
         up = UserProfile.objects.get(user=request.user)
         switch=GameSwitch.objects.get(name='main')
-        if switch.end_game==1:
-            up.logstat=1
-            resp={
-            'status':1,
-            'error':'Time up'
-            }
-            return HttpResponse(json.dumps(resp), content_type = "application/json")
-        if up.logstat==1:
+        
+        if up.logstat==1 and request.method=='GET':
             return redirect('mainapp:congrats')
+        
         else:
             buildings = Building.objects.all()
             d={}
             if 'bquery' in request.POST:
+                if switch.end_game==1:
+                    up.logstat=1
+                    resp={
+                    'status':'error',
+                    'msg':'Time up'
+                    }
+                    return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                 bquery = request.POST['bquery']
                 bl = Building.objects.get(building_name=bquery)
                 qs = Question.objects.filter(building_context=bl)
@@ -185,7 +187,7 @@ def congrats(request):
         up.logstat=1
         up.save()
     else:
-        return HttpResponse("You chose to end the game! you cannot log back in anymore!")
+        return HttpResponse("You chose to end the game! you cannot log back in anymore!",content_type = "application/json", status=500)
     return render(request,'mainapp/congrats.html')
 
 def logout(request):
