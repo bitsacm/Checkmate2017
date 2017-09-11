@@ -1,8 +1,8 @@
-// add id = player_girl to girl's g tag
+
 $(document).ready(function(){
 
 	// info
-	$('body #header_info').prepend('<div id="dev_info"><span></span></div>');
+	$('body').append('<div id="dev_info"><span class="marker"></span><span class="text"></span></div>');
 	
 
 	// names on buildings
@@ -11,7 +11,7 @@ $(document).ready(function(){
 
 
 	//fancy colors
-	$('body').css('backgroundColor', 'rgba(210, 186, 2, 0.14)');
+	$('body').css('backgroundColor', '#c6ac96');
 	$('body').css('fontFamily', 'arial, verdana');
 	
 	var svg = $('svg');
@@ -21,17 +21,40 @@ $(document).ready(function(){
 	var player = getPlayer();
 
 	player.fadeIn();
+	setUp();
 	window.playground = svg;
 
+	var inital_pos = [];
 	function getPlayer(){
 		$('#player_boy').hide();
 		$('#player_girl').hide()
+		var obj = {
+			"none": "none",
+			"girl": 0, 
+			"boy": 1
+		}
+		if(window.sprite == "none"){
+			return initiatePlayer();
+			
+		}else if(window.sprite == obj["boy"]){
 
-		// ...?
+			window.player_id = "player_boy"
+			inital_pos = [-1100, 250]
+			return $('#player_boy');
+
+		}
+		console.log('set up');
+		inital_pos = [-1060, 250]
+		window.player_id = "player_girl"
 		return $('#player_girl');
 	}
 
-
+	function initiatePlayer(){
+		console.log("called");
+		// var v = prompt('girl or boy?');
+		window.sprite  = 0;
+		return getPlayer();
+	}
 
 	/*****
 	*
@@ -41,33 +64,35 @@ $(document).ready(function(){
 
 
 	var roads = $('*[data-name=road]');
+	var player_props, relative_x,relative_y , viewport_coords ;
 	
-	var inital_pos = [-1060, 250]
-	// initial position
-	TweenMax.set(player, {scale: .5, xPercent: -1060, yPercent: 250})
-	
-	// player properties 
-	var player_props = {
-		rel_x: -1060,
-		rel_y: 250,
-		step: 10,
-		top: 0,
-		left:0,
-		width: player[0].getBoundingClientRect().width,
-		rect: player[0].getBoundingClientRect(),
-		new_rect: {}
-	}
-	// console.log(player[0].getBoundingClientRect())
-	var relative_x = player_props.rel_x;
-	var relative_y = player_props.rel_y;
 
-	var viewport_coords = {
-		x: 0,
-		y: 0,
-		prev_x:0,
-		prev_y: 0
+	// initial position
+	function setUp(){
+		TweenMax.set(player, {scale: .5, xPercent: inital_pos[0], yPercent: inital_pos[1]})
+		
+		// player properties 
+		player_props = {
+			rel_x: inital_pos[0],
+			rel_y: inital_pos[1],
+			step: 10,
+			top: 0,
+			left:0,
+			width: player[0].getBoundingClientRect().width,
+			rect: player[0].getBoundingClientRect(),
+			new_rect: {}
+		}
+		// console.log(player[0].getBoundingClientRect())
+		relative_x = player_props.rel_x;
+		relative_y = player_props.rel_y;
+
+		viewport_coords = {
+			x: 0,
+			y: 0,
+			prev_x:0,
+			prev_y: 0
+		}
 	}
-	
 
 	update_viewPort_coords(1)
 	
@@ -337,12 +362,12 @@ $(document).ready(function(){
 		}
 		window.selected = current;
 
-		$('#dev_info span').text('You have approached ' + current);
+		$('#dev_info .text').text(current);
 	
 
 	}, 100);
 
-	svg.append(' <use id="use1" xlink:href="#player_girl" /> <use id="use2" xlink:href="#statue1" />')
+	svg.append(' <use id="use1" xlink:href="'+window.player_id+'" /> <use id="use2" xlink:href="#statue1" />')
 
 
 });
