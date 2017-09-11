@@ -101,3 +101,36 @@ function mysubmit() {
 
 	var response=$.ajax(request);
   }
+
+ function query(){
+ 	var form_data={
+		csrfmiddlewaretoken:document.cookie.split("=")[1],
+ 	};
+
+ 	var request={
+ 		url:"/query",
+ 		type:"GET",
+ 		data:form_data
+ 	};
+
+ 	a=$.ajax(request);
+ 	console.log(a);
+ }
+
+ function update_player(){
+
+ 	new_player="boy"
+ 	var form_data={
+		csrfmiddlewaretoken:document.cookie.split("=")[1],
+		player:new_player,
+ 	};
+
+ 	var request={
+ 		url:"/query",
+ 		type:"POST",
+ 		data:form_data
+ 	};
+
+ 	a=$.ajax(request);
+ 	console.log(a);
+ }

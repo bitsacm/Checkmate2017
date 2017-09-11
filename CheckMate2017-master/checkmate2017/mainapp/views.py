@@ -26,7 +26,7 @@ def index(request):
 
 def register(request):
     up = UserProfile.objects.filter(ip_address=get_ip)
-    if up is None or 1:#this is for developement time being
+    if up is None or 1:
         form = TeamForm(request.POST)
         if request.method == 'POST' and 'register-submit' in request.POST:
             if form.is_valid():
@@ -52,7 +52,7 @@ def register(request):
                 return redirect('mainapp:login')
             else:
                 resp={
-                'status':2,
+                'status':1,
                 'error':'Failed! Invalid login attempt, make sure that you used your own correct BITS mail and id!'
                 }
                 return HttpResponse(json.dumps(resp), content_type = "application/json")
@@ -93,7 +93,7 @@ def login(request):
                 return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
             return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
         else:
-            return HttpResponse('The game is not started yet, or it has already ended')
+            return HttpResponse('The game is not started yet! hold your horses boii :p')
 
 def game(request):
     if not (request.user).is_authenticated() or (request.user.username) == "admin":
@@ -104,8 +104,8 @@ def game(request):
         if switch.end_game==1:
             up.logstat=1
             resp={
-            'status':0,
-            'error':'Time up!'
+            'status':1,
+            'error':'Time up'
             }
             return HttpResponse(json.dumps(resp), content_type = "application/json")
         if up.logstat==1:
@@ -120,28 +120,16 @@ def game(request):
                 for i in qs:
                     d[i.pk-1]=json.loads(serializers.serialize('json', [i,]))
                 return HttpResponse(json.dumps(d), content_type = "application/json")
-
-            question = Question.objects.all()
-            sl= list(up.status)
-            bs= list(up.build_solved)
-            up.score=0
-            for q in question:
-                ch = sl[q.pk-1]
-                if ch=='2':
-                    up.score+=100
-            up.score-= (up.wrong_responses*25)
-            up.build_solved="".join(bs)
-            up.save()
-            return render(request, 'mainapp/game.html',{'up':up,'bs':bs,'buildings':buildings})
+            return render(request, 'mainapp/game.html',{'up':up,'buildings':buildings})
 
 def question(request):
-        print(request)
         up = UserProfile.objects.get(user=request.user)
         sl= list(up.status)
+        at= list(up.attempts)
+        bs= list(up.bstat)
         ansform=AnswerForm(request.POST)
         if request.method == 'POST' and 'pkvalue' in request.POST:
             if ansform.is_valid():
-
                 ques_id=request.POST['pkvalue']
                 index = int(ques_id)-1
                 q = Question.objects.get(pk=ques_id)
@@ -149,40 +137,43 @@ def question(request):
                 ans= data['answer']
                 qs=Question.objects.all()
                 resp={}
-
                 if ans is not None:
-                    print(q.answer,ans)
-                    if sl[index]=="2":
-                        return HttpResponse("Already attempted this question once!")
+                    if sl[index]=="1":
+                        return HttpResponse("Already attempted this question correctly!" ,content_type = "application/json")
+                    elif int(at[index])>=3 and sl[index]=="0":
+                        return HttpResponse("Maximum attempts reached" ,content_type = "application/json")
                     else:
+                        if at[index]=="2":
+                            bs[index]="2"
+                            up.bstat="".join(bs)
+                        at[index]=str(int(at[index])+1)
                         if (q.answer).lower().strip() == (ans.lower()).strip():
-                            sl[index]="2"
+                            sl[index]="1"
+                            bs[index]="1"
                             up.status="".join(sl)
+                            up.attempts="".join(at)
+                            up.bstat="".join(bs)
+                            up.score+=100
                             up.save()
                             resp={
                                 'status':1,
+                                'msg':'correct',
+                                'attempts':at[index]
                             }
-                            print("inside_correct",up.wrong_responses)
-
                         else :
-                            #sl[index]="3"
                             up.status="".join(sl)
+                            up.attempts="".join(at)
                             up.wrong_responses+=1
-                            print(up.wrong_responses)
+                            up.score-=25
                             up.save()
                             resp={
                                 'status':2,
+                                'msg':'incorrect',
+                                'attempts':at[index]
                             }
-                        up.score=0
-                        for qx in qs:
-                            ch = sl[int(qx.pk)-1]
-                            if ch=='2':
-                                up.score+=100
-                        up.score-=(up.wrong_responses*25)
                         up.save()
                         skore=up.score
                         resp['score']=skore
-
                     up.status="".join(sl)
                     up.save() 
                     return HttpResponse(json.dumps(resp), content_type = "application/json")
@@ -200,3 +191,27 @@ def congrats(request):
 def logout(request):
     django_logout(request)
     return render(request, 'mainapp/index.html')
+
+def query(request):
+    if request.user.is_authenticated():
+        up=UserProfile.objects.get(user=request.user)
+        bs= list(up.bstat)
+        k=0
+        phoda=[]
+        lite=[]
+        for i in bs:
+            k+=1
+            if i == '1':
+                phoda.append(Building.objects.get(pk=k).building_name)
+            if i == '2':
+                lite.append(Building.objects.get(pk=k).building_name)
+        if request.method=='POST' and 'player' in request.POST:
+            sprite=request.POST['player']
+            if sprite in ['boy','girl']:
+                up.sprite=sprite
+                up.save()
+        resp={'player':up.sprite,'phoda':phoda,'lite':lite,}
+        return HttpResponse(json.dumps(resp), content_type = "application/json")
+
+    else:
+        return HttpResponse("user not authenticated", content_type = "application/json")
