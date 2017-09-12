@@ -41,7 +41,7 @@ def register(request):
                     'status': 1,
                     'error': 'Team name already registered or other conflicting entries'
                     }
-                    return HttpResponse(json.dumps(resp), content_type = "application/json")
+                    return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                 up = UserProfile()
                 up.user = u
                 up.teamname = data['teamname1']
@@ -51,11 +51,23 @@ def register(request):
                 up.save()
                 return redirect('mainapp:login')
             else:
+                error=json.loads(json.dumps(form.errors))
+                error1=[]
+                for e in error:
+                    d=e
+                    print("d",d)
+                    if(d in ["password1","teamname1"]):
+                        d=d[:-1]
+                    error1.append(d)
+                    error1.append('-')
+                    error1.append((error[e])[0])
+                    error1.append('<br/>')
+                print(error1)
                 resp={
                 'status':1,
-                'error':'Failed! Invalid login attempt, make sure that you used your own correct BITS mail and id!'
+                'msg':' '.join(error1)
                 }
-                return HttpResponse(json.dumps(resp), content_type = "application/json")
+                return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
         else:
             form=TeamForm(request.POST)
             return render(request,'mainapp/login.html',{'form':form})
@@ -85,7 +97,11 @@ def login(request):
                         auth.login(request, user)
                         return redirect(reverse('mainapp:game'))
                     else:
-                        return HttpResponse("Do not forget to register before login :p !")
+                        resp={
+                        'status':'error',
+                        'msg':'Register before you try to Login!'
+                        }
+                        return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                 else:
                     print ( lform.errors )
             else:
@@ -93,7 +109,11 @@ def login(request):
                 return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
             return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
         else:
-            return HttpResponse('The game is not started yet! hold your horses boii :p')
+            resp={
+            'status':'error',
+            'msg':'The game has not started yet',
+            }
+            return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
 
 def game(request):
     if not (request.user).is_authenticated() or (request.user.username) == "admin":
