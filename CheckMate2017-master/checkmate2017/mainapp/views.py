@@ -38,8 +38,8 @@ def register(request):
                     u.save()
                 except IntegrityError:
                     resp={
-                    'status': 1,
-                    'error': 'Team name already registered or other conflicting entries'
+                    'status': 'error',
+                    'msg': 'Team name already registered or other conflicting entries'
                     }
                     return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                 up = UserProfile()
@@ -64,7 +64,7 @@ def register(request):
                     error1.append('<br/>')
                 print(error1)
                 resp={
-                'status':1,
+                'status':'error',
                 'msg':' '.join(error1)
                 }
                 return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
