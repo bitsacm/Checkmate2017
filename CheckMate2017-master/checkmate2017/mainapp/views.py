@@ -51,9 +51,21 @@ def register(request):
                 up.save()
                 return redirect('mainapp:login')
             else:
+                error=json.loads(json.dumps(form.errors))
+                error1=[]
+                for e in error:
+                    d=e
+                    print("d",d)
+                    if(d in ["password1","teamname1"]):
+                        d=d[:-1]
+                    error1.append(d)
+                    error1.append('-')
+                    error1.append((error[e])[0])
+                    error1.append('<br/>')
+                print(error1)
                 resp={
                 'status':1,
-                'error':'Failed! Invalid login attempt, make sure that you used your own correct BITS mail and id!'
+                'msg':' '.join(error1)
                 }
                 return HttpResponse(json.dumps(resp), content_type = "application/json")
         else:
