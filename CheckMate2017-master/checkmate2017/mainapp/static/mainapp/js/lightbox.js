@@ -2,7 +2,7 @@ var no_of_questions=0;//length of question array per building
 var questions={};//question list
 var pks={};
 var qVal;
-
+var stories={"Meera":"Stories for Meera","Budh":"Stories for Budh","malA":"Story for MalA"};
 var xopen = false;
 $(document).ready(function(){
 	$('#backdrop').fadeOut(0);
@@ -20,8 +20,17 @@ $(document).ready(function(){
 function lightbox(){
 	$('#backdrop').fadeIn();
 	$('#backdrop .heading').text(window.selected);
+	var text_content=document.getElementById('content_text');
+	var buttons_and_inputs=document.getElementById('extra_part');
+	var building=window.selected;
+	text_content.innerHTML=stories[building];
+	buttons_and_inputs.innerHTML="<button id='continue' onclick='loadQues()'>Continue...</button>";
+}
+
+function loadQues() {
 	var token = document.cookie.split("=")[1];
-	var content=document.getElementById('content');
+	var buttons_and_inputs=document.getElementById('extra_part');
+	var text_content=document.getElementById('content_text');
 	var a = {
 		url: '/game',
 		data: {
@@ -34,7 +43,6 @@ function lightbox(){
 			var buff;//read per question
 			var index1=msg1.indexOf("[");
 			var index2=msg1.indexOf("]");
-			var inner="<select id='qlist'>";
 			while(index1 != -1){
 				no_of_questions++;
 				buff= msg1.substring(index1+1,index2);
@@ -44,28 +52,23 @@ function lightbox(){
 				var con=JSON.parse(buff);
 				pks["pk" + no_of_questions]=con.pk;
 				questions["question" + no_of_questions]=con.fields.question_text;
-				inner = inner + "<option style='width:60%;' value ='" + no_of_questions + "'>Question " + no_of_questions + "</button><br/>";
 			}
-			content.innerHTML=inner+"</select> <button onclick='loadQues()'>Load Question</button>";
+			text_content.innerHTML=questions["question1"];
 		},
 		error: function(xhr){
 			console.log(xhr);
 		},
 		type: 'POST'
 	}
-$.ajax(a);
-}
+	$.ajax(a);
+	var answer_form="<input id= 'ans' name='answer' type='text' placeholder='Answer'><button id='submit' onclick='mysubmit()'>Submit</button>";//answer form html
+	buttons_and_inputs.innerHTML=answer_form;
 
-function loadQues() {
-	var answer_form="<br/><input id= 'ans' name='answer' type='text' placeholder='Answer'><br/> <button onclick='mysubmit()'>Submit</button> <button onclick='lightbox()'>Back</button>";//answer form html
-	var content=document.getElementById('content');
-	var selectList=document.getElementById('qlist');
-	var questionVal=selectList.options[selectList.selectedIndex].value;
-	content.innerHTML=questions["question" + questionVal] + answer_form;
-	qVal=questionVal;
 }
 
 function mysubmit() {
+
+	//Answer submission data format
 	var form_data={
 		csrfmiddlewaretoken:document.cookie.split("=")[1],
 		pkvalue:pks["pk"+qVal],
@@ -87,7 +90,7 @@ function mysubmit() {
 				alert("correct")
 			else
 				alert("incorrect")
-			
+
 		},
 		error: function(xhr)
 		{
