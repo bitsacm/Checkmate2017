@@ -20,7 +20,7 @@ class UserProfile(models.Model):
 	bstat = models.CharField(max_length=80,default="0000000000000000000000000000000000000000000000000000000")
 	wrong_responses= models.IntegerField(default=0)
 	logstat=models.IntegerField(null=False, choices=((0,'0'),(1,'1')),default=0)#0 for logged out, 1 for logged in
-	sprite=models.CharField(null=False,max_length=50,choices=(('girl','girl'),('boy','boy')),default='girl')
+	sprite=models.CharField(null=False,max_length=50,choices=(('girl','girl'),('boy','boy')),default='Null')
 
 
 	def __str__(self):
