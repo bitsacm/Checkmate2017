@@ -207,7 +207,11 @@ def congrats(request):
         up.logstat=1
         up.save()
     else:
-        return HttpResponse("You chose to end the game! you cannot log back in anymore!",content_type = "application/json", status=500)
+        resp={
+        'status':'error',
+        'msg':'You chose to end the game! you cannot log back in anymore!'
+        }
+        return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
     return render(request,'mainapp/congrats.html')
 
 def logout(request):
