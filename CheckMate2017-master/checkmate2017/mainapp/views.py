@@ -13,6 +13,7 @@ from ipware.ip import get_ip
 import json
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
+from .leaderboard import pingservers
 
 
 def test(request):
@@ -256,3 +257,14 @@ def query(request):
 
     else:
         return HttpResponse("user not authenticated", content_type = "application/json")
+
+
+def pingme(request):
+        mainapp.views.pingserver()
+        up = UserProfile.objects.all()
+        k=0
+        d={}
+        for i in up:
+            d[k]=json.loads(serializers.serialize('json', [i,]))
+            k+=1
+        return HttpResponse(json.dumps(d), content_type = "application/json")
