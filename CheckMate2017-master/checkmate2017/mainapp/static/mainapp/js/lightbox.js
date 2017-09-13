@@ -1,7 +1,7 @@
 var no_of_questions=0;//length of question array per building
 var questions={};//question list
 var pks={};
-var qVal;
+var qVal = 1;
 var stories={"Meera":"Stories for Meera","Budh":"Stories for Budh","malA":"Story for MalA"};
 var xopen = false;
 $(document).ready(function(){
@@ -74,7 +74,7 @@ function mysubmit() {
 		pkvalue:pks["pk"+qVal],
 		answer:$("#ans").val()
 	};
-
+	console.log('...',pks, qVal, form_data)
 	var request={
 		url:"/question",
 		type:"POST",
@@ -85,6 +85,7 @@ function mysubmit() {
 			console.log(msg);
 			//update points
 			$("#score").html("Points:"+msg["score"])
+			updateStickers(msg.phoda, msg.lite)
 			//show correct
 			if(msg["status"]=="1")
 				alert("correct")
