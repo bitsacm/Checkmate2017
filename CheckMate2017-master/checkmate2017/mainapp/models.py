@@ -37,11 +37,17 @@ class Question(models.Model):
         building_context = models.ForeignKey(Building,on_delete=models.CASCADE)
         points= models.IntegerField(null=False)
         question_text=RichTextField()
-        answer = models.CharField(max_length=100)
         difficulty_level=models.IntegerField(choices=((1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5')),default=1)
 
         def __str__(self):
                 return "Question #"+str(self.pk)
+
+class Answer(models.Model):
+		context = models.ForeignKey(Building, on_delete=models.CASCADE)
+		answer = models.CharField(max_length=100,default='ah')
+
+		def __str__(self):
+			return "Answer @"+str(self.context)
 
 class GameSwitch(models.Model):
 		name=models.CharField(null=False,max_length=10)

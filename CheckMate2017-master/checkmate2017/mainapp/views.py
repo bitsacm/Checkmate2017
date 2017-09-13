@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
-from .models import UserProfile, GameSwitch, Building, Question
+from .models import UserProfile, GameSwitch, Building, Question, Answer
 from django.shortcuts import redirect, render_to_response
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib import auth
@@ -38,8 +38,8 @@ def register(request):
                     u.save()
                 except IntegrityError:
                     resp={
-                    'status': 1,
-                    'error': 'Team name already registered or other conflicting entries'
+                    'status': 'error',
+                    'msg': 'Team name already registered or other conflicting entries'
                     }
                     return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                 up = UserProfile()
@@ -64,7 +64,7 @@ def register(request):
                     error1.append('<br/>')
                 print(error1)
                 resp={
-                'status':1,
+                'status':'error',
                 'msg':' '.join(error1)
                 }
                 return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
@@ -174,6 +174,7 @@ def question(request):
                 ques_id=request.POST['pkvalue']
                 index = int(ques_id)-1
                 q = Question.objects.get(pk=ques_id)
+                a= Answer.objects.get(context=(Building.objects.get(building_name=q.building_context)))
                 data=ansform.cleaned_data
                 ans= data['answer']
                 qs=Question.objects.all()
@@ -189,7 +190,7 @@ def question(request):
                             bs[index]="2"
                             up.bstat="".join(bs)
                         at[index]=str(int(at[index])+1)
-                        if (q.answer).lower().strip() == (ans.lower()).strip():
+                        if (a.answer).lower().strip() == (ans.lower()).strip():
                             sl[index]="1"
                             bs[index]="1"
                             up.status="".join(sl)
@@ -230,7 +231,11 @@ def congrats(request):
         up.logstat=1
         up.save()
     else:
-        return HttpResponse("You chose to end the game! you cannot log back in anymore!",content_type = "application/json", status=500)
+        resp={
+        'status':'error',
+        'msg':'You chose to end the game! you cannot log back in anymore!'
+        }
+        return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
     return render(request,'mainapp/congrats.html')
 
 def logout(request):
