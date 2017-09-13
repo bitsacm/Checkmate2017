@@ -14292,7 +14292,9 @@
        id="g5852"><polygon
          class="st244"
          points="1738.1,1285.3 1740.7,1382.1 1733.9,1382.1 1736.4,1285.3   "
-         id="polygon5850" /></g></g><use
+         id="polygon5850" /></g></g>
+          <use id="use1" xlink:href="#player_girl" /> 
+         <use id="use1" xlink:href="#player_boy" /> <use
      id="use2"
      xlink:href="#statue1" /><use
      id="use3"
@@ -14566,7 +14568,8 @@
        id="g5111"><polygon
          class="st244"
          points="1638.6,453.9 1641.7,566.9 1633.6,566.9 1636.6,453.9   "
-         id="polygon5109" /></g></g></svg>
+         id="polygon5109" /></g></g>
+        </svg>
 		</div>
 		<div id="backdrop">
 			<div class="lightbox">
@@ -14582,12 +14585,30 @@
 				</div>
 			</div>
 		</div>
+		<div id="choose">
+			<div id="canvas">
+				<h2>Choose a charector</h2>
+				<ul>
+					<li data="girl">
+						girl
+					</li>
+					<li data="boy">
+						boy
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div id="retry"><div></div></div>
 		<script type="text/javascript">
-			$('#backdrop').fadeOut(0);
+			
 			var up = "{{up.teamname}}";
 			var score = {{up.score}};
 			var buildings_names = [];
-			window.sprite = "none";
+			{% if up.sprite %}
+				window.sprite = "{{up.sprite}}";
+			{% else %}
+				console.log('empty');
+			{% endif %}
 			{% for b in buildings %}
 				var k = "{{b.building_name}}"
 				buildings_names.push(k);

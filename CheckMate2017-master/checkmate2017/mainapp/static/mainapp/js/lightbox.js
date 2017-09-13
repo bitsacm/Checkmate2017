@@ -5,7 +5,7 @@ var qVal;
 var stories={"Meera":"Stories for Meera","Budh":"Stories for Budh","malA":"Story for MalA"};
 var xopen = false;
 $(document).ready(function(){
-	$('#backdrop').fadeOut(0);
+	
 
 
 	window.lightbox = lightbox;

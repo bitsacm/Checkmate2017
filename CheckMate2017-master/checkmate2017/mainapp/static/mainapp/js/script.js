@@ -1,15 +1,11 @@
 
 $(document).ready(function(){
 
-	// info
-	$('body').append('<div id="dev_info"><span class="marker"></span><span class="text"></span></div>');
-	
-
 	// names on buildings
 	$('body').append('<div id="building_names"></div>');
 	// $('#building_names').css({'position': 'absolute','top': 0, 'left':0, 'width': 'fit-content', 'background': 'rgba(0,0,0,0.2)', 'color': '#eee', 'fontSize': '10px', 'padding': '2px', 'borderRadius': '6px'});
 
-
+	$('#backdrop').fadeOut(0);
 	//fancy colors
 	$('body').css('backgroundColor', '#c6ac96');
 	$('body').css('fontFamily', 'arial, verdana');
@@ -17,50 +13,85 @@ $(document).ready(function(){
 	var svg = $('svg');
 	
 	// getNamedItem('viewbox').value
-	
-	var player = getPlayer();
+	$('#choose').hide();
+	var player;
+	player = getPlayer();
+	if(player!=null){
+		setUp();
+	}
 
-	player.fadeIn();
-	setUp();
+	
+	
 	window.playground = svg;
 
 	var inital_pos = [];
 	function getPlayer(){
+
 		$('#player_boy').hide();
-		$('#player_girl').hide()
+		$('#player_girl').hide();
+		$('#retry').hide();
 		var obj = {
-			"none": "none",
-			"girl": 0, 
-			"boy": 1
+			"none": "Null",
+			"girl": "girl", 
+			"boy": "boy"
 		}
-		if(window.sprite == "none"){
+		console.log(window.sprite)
+		if(window.sprite == obj["none"]){
 			return initiatePlayer();
 			
 		}else if(window.sprite == obj["boy"]){
 
 			window.player_id = "player_boy"
-			inital_pos = [-1100, 250]
+			inital_pos = [-1100, 250];
+			
 			return $('#player_boy');
 
 		}
-		console.log('set up');
+		
 		inital_pos = [-1060, 250]
 		window.player_id = "player_girl"
+		
 		return $('#player_girl');
 	}
 
 	function initiatePlayer(){
 		console.log("called");
-		// var v = prompt('girl or boy?');
-		window.sprite  = 0;
-		return getPlayer();
+		
+		// lightbox for choosing girl or boy
+		
+		$('#choose').fadeIn();
+
+		return null;
+		
+		
 	}
+
+	$('#choose li').click(function(e){
+			var choice = $(e.target).attr('data');
+			window.sprite  = choice;
+			$('#choose').fadeOut();
+			player = getPlayer();
+			setUp();
+			var token = document.cookie.split("=")[1];
+			
+			$.ajax({
+				url: '/query',
+				method: 'POST',
+				data: {
+					'player': choice,
+					'csrfmiddlewaretoken': token
+				}
+			})
+
+	})
 
 	/*****
 	*
-	*  Walking on the road
+	*  Walking on the road 
 	*
 	******/
+
+
 
 
 	var roads = $('*[data-name=road]');
@@ -69,13 +100,18 @@ $(document).ready(function(){
 
 	// initial position
 	function setUp(){
+		// info
+		$('body').append('<div id="dev_info"><span class="marker"></span><span class="text"></span></div>');
+		$('#retry').fadeIn();
+		
+		player.fadeIn();
 		TweenMax.set(player, {scale: .5, xPercent: inital_pos[0], yPercent: inital_pos[1]})
 		
 		// player properties 
 		player_props = {
 			rel_x: inital_pos[0],
 			rel_y: inital_pos[1],
-			step: 10,
+			step: 14,
 			top: 0,
 			left:0,
 			width: player[0].getBoundingClientRect().width,
@@ -92,9 +128,67 @@ $(document).ready(function(){
 			prev_x:0,
 			prev_y: 0
 		}
+		update_viewPort_coords(1);
+
+		var old_building_id = null;
+
+		var gamePlay = setInterval(function(){
+			player_props.rel_y = relative_y;
+			player_props.rel_x = relative_x;
+			player_props.rect = player[0].getBoundingClientRect();
+			// console.log(player_props.top, player_props.left)
+
+			var final_player_props = {};
+
+			for(i in player_props){
+				final_player_props[i] = player_props[i];
+			}
+
+			move(final_player_props);
+			player_props.top = 0;
+			player_props.left = 0;
+
+			var distances = [];
+			buildings.forEach(function(ele, ind){
+				// console.log(nearest_distance(player[0], ele[0]).toString());
+				// console.log(ele)
+				distances.push([ele.attr('id'), nearest_distance(player[0], ele[0]).toString()]);
+			});
+			// console.log(distances)
+			var sorted = distances.sort(function(a, b){
+				return parseInt(a[1]) - parseInt(b[1]);
+			})
+			var current = sorted[0][0];
+			new_building_id = current;
+			if(old_building_id){
+				TweenMax.to($('#'+ old_building_id), .4 ,{scale: 1});
+			}
+			// $('#'+ current).css('transformOrigin', '0% 0%');
+			// TweenMax.to($('#'+ current), .4 ,{scale: 1.05});
+			old_building_id = current;
+
+			if(current=="XMLID_1785_"){
+				current = "Library";
+			}else if(current=="g3320"){
+				current = "BirlaMemorial"; 
+			}else if(current =="XMLID_2622_"){
+				current = "Workshop";
+			}else if(current =="XMLID_2421_"){
+				current = "ClockTower";
+			}
+			window.selected = current;
+
+			$('#dev_info .text').text(current);
+		
+
+		}, 100);
+
+		var view = setInterval(function(){
+			update_viewPort_coords(0);
+		}, 1000);
 	}
 
-	update_viewPort_coords(1)
+	
 	
 	// movement
 	$(document).keydown(function(e){
@@ -123,6 +217,7 @@ $(document).ready(function(){
 	var prev_road = null;
 	var history = [inital_pos, inital_pos,inital_pos, inital_pos,inital_pos];
 	var states = [true, true, true, true, true];
+	var retry = [false, false, false, false, false];
 
 	function move(player_props){
 		var inRoad = false;
@@ -163,7 +258,7 @@ $(document).ready(function(){
 		var state = (inRoad && notInCircle);
 		states.push(state);
 		// console.log(state)
-				
+		retry.push(false);
 		if(state && move){
 			player_props.rel_x +=  player_props.left;
 			player_props.rel_y +=  player_props.top;
@@ -252,9 +347,23 @@ $(document).ready(function(){
 
 	}
 
-	var view = setInterval(function(){
-		update_viewPort_coords(0);
-	}, 1000)
+	$('#retry').click(function(){
+		console.log('retry')
+
+		var min = 40
+		if(retry.slice(-5).indexOf(true) == -1)
+		{
+			if(history.length>min){
+				console.log('slicing')
+				history = history.slice(0, history.length - min);
+				states = states.slice(0, states.length - min);
+				[[player_props.rel_x, player_props.rel_y]] = history.slice(-2, -1);
+				retry.push(true);
+				render(player_props);
+			}
+		}
+	})
+	
 
 	// returns true if  enclosing
 	function checkEnclosed(player_rect, container){
@@ -299,7 +408,7 @@ $(document).ready(function(){
 	*	Nearest building
 	*
 	*****/
-	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#ClockTower'), $('#malA'), $('#g3320'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#XMLID_1785_'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB'), $('#XMLID_2622_')];
+	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#XMLID_2421_'), $('#malA'), $('#g3320'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#XMLID_1785_'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB'), $('#XMLID_2622_')];
 
 	function nearest_distance(player, container){
 		var player_rect = player.getBoundingClientRect();
@@ -316,56 +425,7 @@ $(document).ready(function(){
 		return Math.sqrt(Math.pow(Math.min(left, right), 2) +  Math.pow(Math.min(top, bottom),2));
 	}
 
-	var old_building_id = null;
-
-	var gamePlay = setInterval(function(){
-		player_props.rel_y = relative_y;
-		player_props.rel_x = relative_x;
-		player_props.rect = player[0].getBoundingClientRect();
-		// console.log(player_props.top, player_props.left)
-
-		var final_player_props = {};
-
-		for(i in player_props){
-			final_player_props[i] = player_props[i];
-		}
-
-		move(final_player_props);
-		player_props.top = 0;
-		player_props.left = 0;
-
-		var distances = [];
-		buildings.forEach(function(ele, ind){
-			// console.log(nearest_distance(player[0], ele[0]).toString());
-			// console.log(ele)
-			distances.push([ele.attr('id'), nearest_distance(player[0], ele[0]).toString()]);
-		});
-		// console.log(distances)
-		var sorted = distances.sort(function(a, b){
-			return parseInt(a[1]) - parseInt(b[1]);
-		})
-		var current = sorted[0][0];
-		new_building_id = current;
-		if(old_building_id){
-			TweenMax.to($('#'+ old_building_id), .4 ,{scale: 1});
-		}
-		// $('#'+ current).css('transformOrigin', '0% 0%');
-		// TweenMax.to($('#'+ current), .4 ,{scale: 1.05});
-		old_building_id = current;
-
-		if(current=="XMLID_1785_"){
-			current = "Library";
-		}else if(current=="g3320"){
-			current = "BirlaMemorial"; 
-		}else if(current =="XMLID_2622_"){
-			current = "Workshop";
-		}
-		window.selected = current;
-
-		$('#dev_info .text').text(current);
 	
-
-	}, 100);
 
 	svg.append(' <use id="use1" xlink:href="'+window.player_id+'" /> <use id="use2" xlink:href="#statue1" />')
 
