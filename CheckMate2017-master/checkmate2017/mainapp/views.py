@@ -14,7 +14,8 @@ import json
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from .leaderboard import pingservers
-
+import urllib, requests, sys
+from django.views.decorators.csrf import csrf_exempt
 
 def test(request):
     return HttpResponse('Fack! it is working :D')
@@ -258,13 +259,33 @@ def query(request):
     else:
         return HttpResponse("user not authenticated", content_type = "application/json")
 
-
+@csrf_exempt
 def pingme(request):
-        #mainapp.views.pingserver()
-        up = UserProfile.objects.all()
+        x=20
+        up = UserProfile.objects.order_by('score')[:]
+        n=len(up)
+        up=up[n-x:]
         k=0
         d={}
+        x=""
         for i in up:
-            d[k]=json.loads(serializers.serialize('json', [i,]))
-            k+=1
+                d[k]={
+                'Teamname':i.teamname,
+                'Score':i.score
+                }
+                k+=1
         return HttpResponse(json.dumps(d), content_type = "application/json")
+
+@csrf_exempt
+def pingservers(request):
+    iplist=['127.0.0.1',]
+    ob=[]
+    i=0
+    for ip in iplist:
+        urlx='http://'+ip+':8000/pingme'
+        client=requests.session()
+        client.get(urlx)
+
+        r = client.post(urlx, headers=dict(Referer=urlx))
+        print(r.text)
+    return HttpResponse((r.text), content_type = "application/json")
