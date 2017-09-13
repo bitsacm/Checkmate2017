@@ -1,0 +1,16 @@
+
+<!DOCTYPE html>
+{% load static from staticfiles %}
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript" src="{% static 'mainapp/js/Update.js' %}"></script>
+    </head>
+    <body>
+        <input type="button" onclick="UpdateList()" value="Update Rank List"/>
+        <div id="leaderboard">
+            <ol id="results">
+            </ol>
+        </div>
+    </body>
+</html>

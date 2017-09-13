@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404 ,HttpResponseForbidden
 from .models import UserProfile, GameSwitch, Building, Question, Answer
 from django.shortcuts import redirect, render_to_response
 from django.contrib.auth import authenticate, login, logout as django_logout
@@ -266,20 +266,21 @@ def pingme(request):
         n=len(up)
         up=up[n-x:]
         k=0
-        d={}
+        d=[]
         x=""
         for i in up:
-                d[k]={
+            if(i.score>0):
+                d.append({
                 'Teamname':i.teamname,
                 'Score':i.score
-                }
-                k+=1
+                })
+        d.reverse()
         return HttpResponse(json.dumps(d), content_type = "application/json")
 
 @csrf_exempt
 def pingservers(request):
-    iplist=['127.0.0.1',]
-    ob=[]
+    iplist=['127.0.0.1','127.0.0.1']
+    all_list=[]
     i=0
     for ip in iplist:
         urlx='http://'+ip+':8000/pingme'
@@ -287,5 +288,14 @@ def pingservers(request):
         client.get(urlx)
 
         r = client.post(urlx, headers=dict(Referer=urlx))
-        print(r.text)
-    return HttpResponse((r.text), content_type = "application/json")
+        a=r.json()
+        all_list.extend(a)
+    sorted_all_list = sorted(all_list, key=lambda k: -k['Score']) 
+
+    return HttpResponse((json.dumps(sorted_all_list)), content_type = "application/json")
+
+def leaderboard(request):
+    if request.user.is_authenticated():
+        return render(request,"mainapp/leaderboard.html")
+    else:
+        return HttpResponseForbidden()

@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^query$',views.query,name='query'),
     url(r'^pingme$',views.pingme,name='pingme'),
     url(r'^pingservers$',views.pingservers,name='pingservers'),
+    url(r'^leaderboard$',views.leaderboard,name='leaderboard'),
 ]
