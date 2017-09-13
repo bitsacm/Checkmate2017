@@ -6,6 +6,8 @@ $(document).ready(function(){
 	// $('#building_names').css({'position': 'absolute','top': 0, 'left':0, 'width': 'fit-content', 'background': 'rgba(0,0,0,0.2)', 'color': '#eee', 'fontSize': '10px', 'padding': '2px', 'borderRadius': '6px'});
 
 	$('#backdrop').fadeOut(0);
+
+	$('#help_screen').hide();
 	//fancy colors
 	$('body').css('backgroundColor', '#c6ac96');
 	$('body').css('fontFamily', 'arial, verdana');
@@ -353,7 +355,7 @@ $(document).ready(function(){
 		console.log('retry')
 
 		var min = 40
-		if(retry.slice(-5).indexOf(true) == -1)
+		if(retry.slice(-2).indexOf(true) == -1)
 		{
 			if(history.length>min){
 				console.log('slicing')
@@ -430,5 +432,13 @@ $(document).ready(function(){
 
 	svg.append(' <use id="use1" xlink:href="'+window.player_id+'" /> <use id="use2" xlink:href="#statue1" />')
 
+
+	$('#help').click(function(){
+		$('#help_screen').fadeIn();
+	})
+
+	$('#help_screen .close').click(function(){
+		$('#help_screen').fadeOut();	
+	})
 
 });

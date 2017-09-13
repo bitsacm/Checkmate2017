@@ -25,11 +25,24 @@ body{
 #main_header nav {
 	display: flex;
 	align-items: center;
+	flex-direction: row;
 }
 
 #main_header nav li{
+	margin: 0 10px;
 	list-style: none;
+	cursor: pointer;
 	
+}
+
+#main_header nav li:nth-of-type(1){
+	border-radius: 50%;
+	background: rgba(0,0,0,0.4);
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 20px;
+	text-align: center;
 }
 
 #main_header nav li a{
@@ -158,23 +171,124 @@ body{
 	transform: translateY(-2px);
 }
 
-#retry div, #retry{
+#retry .img div , #retry .img, #retry{
 	
 	width: 30px;
 	height: 30px;
-	
-	border-radius: 50%;
-	
-}
-#retry{
-	position: absolute;
-	bottom: 30px;
-	right: 30px;
 	background: #fff;
-	padding: 10px;
+	border-radius: 50%;
+	/*box-sizing: border-box;	*/
 }
 
-#retry div{
+#retry{
+	background: transparent;
+	position: absolute;
+	bottom: 60px;
+	right: 60px;
+	cursor: pointer;
+	
+}
+#retry .img{
+	padding: 10px;
+
+}
+
+#retry .img div{
+	position: absolute;
 	background: url('../img/retry.png') 0 0 no-repeat;
 	background-size: cover;
+	
+}
+
+#retry .container{
+	position: absolute;
+	top: 10px;
+	width: 0;
+	/*font: 0/0 arial, verdana;*/
+	left: 10px;
+	background: #fff;
+	color: #fff;
+	padding: 2px 5px;
+	border-radius: 6px 0 0 6px;
+	height: 30px;
+	/*border: 1px solid #000;*/
+	font-size: 22px;
+	line-height: 30px;
+	overflow: hidden;
+	margin: 0;
+	transition: all 0.4s ease-in-out;
+}
+
+#retry:hover .container{
+	width: 100px;
+	left: -80px;
+	
+	color: #000;
+	
+}
+
+#help_screen{
+	position: absolute;
+	width: 100vw;
+	top: 0;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#info{
+	padding: 40px;
+	background: rgba(0,0,0,0.2);
+	border-radius: 10px;
+	width: 700px;
+	color: #fff;
+	text-align: center;
+}
+
+#info .close{
+	float: right;
+	position: relative;
+	top: 30px;
+}
+
+#info .content .col{
+	width: 30%;
+	
+	display: inline-block;
+	padding: 10px;
+	margin: 30px;
+	/*border: 1px solid #fff;*/
+	height: 200px;
+	/*width: 100%;*/
+
+}
+
+#info .col:nth-of-type(1) {
+	background: url('../img/arrows.png') 0 0 no-repeat;
+	background-size: contain;
+}
+
+#info .col:nth-of-type(2){
+	background: url('../img/spacebar.png') 0 70px no-repeat;
+	background-size: contain;
+}
+
+#info .text{
+	font-size: 24px;
+	line-height: 28px;
+}
+
+#info .link{
+	text-align: right;
+	padding: 30px;
+	font-size: 20px;
+}
+
+#info .link a{
+	color: #000;
+	text-decoration: none;
+	background: rgba(255, 255, 255, 0.6);
+	padding: 10px;
+	border-radius: 6px;
 }

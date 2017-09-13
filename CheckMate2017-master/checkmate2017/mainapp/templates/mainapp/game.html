@@ -20,11 +20,11 @@
 		<div id="score">
 		</div>
 		<nav>
-			<ul>
+				<li id="help">?</li>
 				<li>
 					<a href="{% url 'mainapp:congrats' %}">Quit</a>
 				</li>
-			</ul>
+
 		</nav>
 	<!-- </div> -->
 </div>
@@ -16759,7 +16759,29 @@
 				</ul>
 			</div>
 		</div>
-		<div id="retry"><div></div></div>
+		<div id="retry">
+			<div class="container">Go back</div>
+			<div class="img">
+				<div></div>
+			</div>
+		</div>
+		<div id="help_screen">
+			<div id="info">
+				<div class="close">X</div>				
+				<h1>Help</h1>
+				<div class="content">
+					<div class="col">
+
+					</div>
+					<div class="col">
+						
+						
+					</div>
+					<div class="text">Use arrow keys to move and space bar to select buildings</div>
+				</div>
+				<div class="link"><a href="{% url 'mainapp:instructions' %}">More Instructions >></a></div>
+			</div>
+		</div>
 		<script type="text/javascript">
 			
 			var up = "{{up.teamname}}";
@@ -16779,7 +16801,7 @@
 			var phoda = [];
 			{% for p in phoda %}
 				var k = "{{p}}"
-				p.push(p);
+				phoda.push(k);
 			{% endfor %}
 
 			var lite = [];
@@ -16787,7 +16809,7 @@
 				var k = "{{l}}"
 				lite.push(k);
 			{% endfor %}
-			
+			console.log($('*[data-name=sticker]'));
 			$('*[data-name=sticker]').hide();
 			function updateStickers(phoda, lite){
 				lite.forEach(function(ele, ind){
