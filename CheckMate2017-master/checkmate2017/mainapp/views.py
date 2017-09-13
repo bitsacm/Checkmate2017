@@ -115,6 +115,22 @@ def login(request):
             }
             return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
 
+def phode_lite(request):
+    if request.user.is_authenticated():
+        up=UserProfile.objects.get(user=request.user)
+        bs= list(up.bstat)
+        k=0
+        phoda=[]
+        lite=[]
+        for i in bs:
+            k+=1
+            if i == '1':
+                phoda.append(Building.objects.get(pk=k).building_name)
+            if i == '2':
+                lite.append(Building.objects.get(pk=k).building_name)
+        return [phoda, lite]
+
+
 def game(request):
     if not (request.user).is_authenticated() or (request.user.username) == "admin":
         return redirect('mainapp:login')
@@ -142,7 +158,8 @@ def game(request):
                 for i in qs:
                     d[i.pk-1]=json.loads(serializers.serialize('json', [i,]))
                 return HttpResponse(json.dumps(d), content_type = "application/json")
-            return render(request, 'mainapp/game.html',{'up':up,'buildings':buildings})
+            [phoda, lite] = phode_lite(request)
+            return render(request, 'mainapp/game.html',{'up':up,'buildings':buildings,"phoda": phoda, "lite": lite})
 
 def question(request):
         up = UserProfile.objects.get(user=request.user)
@@ -150,7 +167,9 @@ def question(request):
         at= list(up.attempts)
         bs= list(up.bstat)
         ansform=AnswerForm(request.POST)
+        
         if request.method == 'POST' and 'pkvalue' in request.POST:
+            
             if ansform.is_valid():
                 ques_id=request.POST['pkvalue']
                 index = int(ques_id)-1
@@ -159,6 +178,7 @@ def question(request):
                 ans= data['answer']
                 qs=Question.objects.all()
                 resp={}
+            
                 if ans is not None:
                     if sl[index]=="1":
                         return HttpResponse("Already attempted this question correctly!" ,content_type = "application/json")
@@ -196,6 +216,9 @@ def question(request):
                         up.save()
                         skore=up.score
                         resp['score']=skore
+                        [phoda, lite] = phode_lite(request)
+                        resp['phoda'] = phoda
+                        resp['lite'] = lite
                     up.status="".join(sl)
                     up.save() 
                     return HttpResponse(json.dumps(resp), content_type = "application/json")
@@ -221,22 +244,13 @@ def logout(request):
 def query(request):
     if request.user.is_authenticated():
         up=UserProfile.objects.get(user=request.user)
-        bs= list(up.bstat)
-        k=0
-        phoda=[]
-        lite=[]
-        for i in bs:
-            k+=1
-            if i == '1':
-                phoda.append(Building.objects.get(pk=k).building_name)
-            if i == '2':
-                lite.append(Building.objects.get(pk=k).building_name)
+        
         if request.method=='POST' and 'player' in request.POST:
             sprite=request.POST['player']
             if sprite in ['boy','girl']:
                 up.sprite=sprite
                 up.save()
-        resp={'player':up.sprite,'phoda':phoda,'lite':lite,}
+        resp={'player':up.sprite}
         return HttpResponse(json.dumps(resp), content_type = "application/json")
 
     else:

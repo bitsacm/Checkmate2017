@@ -96,6 +96,8 @@ $(document).ready(function(){
 
 	var roads = $('*[data-name=road]');
 	var player_props, relative_x,relative_y , viewport_coords ;
+	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#XMLID_2421_'), $('#malA'), $('#g3320'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#XMLID_1785_'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB'), $('#XMLID_2622_')];
+
 	
 
 	// initial position
@@ -408,8 +410,7 @@ $(document).ready(function(){
 	*	Nearest building
 	*
 	*****/
-	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#XMLID_2421_'), $('#malA'), $('#g3320'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#XMLID_1785_'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB'), $('#XMLID_2622_')];
-
+	
 	function nearest_distance(player, container){
 		var player_rect = player.getBoundingClientRect();
 		var container_rect = container.getBoundingClientRect();
