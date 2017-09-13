@@ -260,7 +260,7 @@ def query(request):
 
 
 def pingme(request):
-        mainapp.views.pingserver()
+        #mainapp.views.pingserver()
         up = UserProfile.objects.all()
         k=0
         d={}
