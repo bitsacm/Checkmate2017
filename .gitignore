@@ -1,3 +1,7 @@
 myvenv
 *.pyc
 .idea/
+db.sqlite3
+*.db
+settings.py
+wsgi.py
