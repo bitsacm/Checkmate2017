@@ -7,6 +7,8 @@
 		<link rel="stylesheet" href="{% static 'mainapp/css/lightbox.css' %}">
 		<link rel="stylesheet" href="{% static 'mainapp/css/game.css' %}">
 		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
+		<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
 		<script src="{% static 'mainapp/js/TweenMax.min.js'%}"></script>
 
 	</head>
@@ -16732,6 +16734,8 @@
 </g></svg>
 
 		</div>
+
+
 		<div id="backdrop">
 			<div class="lightbox">
 				<div id="all_content">
@@ -16746,9 +16750,11 @@
 				</div>
 			</div>
 		</div>
+
+
 		<div id="choose">
 			<div id="canvas">
-				<h2>Choose a charector</h2>
+				<h2>Choose a charecter</h2>
 				<ul>
 					<li data="girl">
 						girl
@@ -16759,31 +16765,34 @@
 				</ul>
 			</div>
 		</div>
+
+
 		<div id="retry">
 			<div class="container">Go back</div>
 			<div class="img">
 				<div></div>
 			</div>
 		</div>
+
+
 		<div id="help_screen">
 			<div id="info">
-				<div class="close">X</div>				
+				<div class="close">X</div>
 				<h1>Help</h1>
 				<div class="content">
 					<div class="col">
-
 					</div>
 					<div class="col">
-						
-						
 					</div>
 					<div class="text">Use arrow keys to move and space bar to select buildings</div>
 				</div>
 				<div class="link"><a href="{% url 'mainapp:instructions' %}">More Instructions >></a></div>
 			</div>
 		</div>
+		<div id="dialogbox" class="custom-ui-widget-header-warning"></div>
+
 		<script type="text/javascript">
-			
+
 			var up = "{{up.teamname}}";
 			var score = {{up.score}};
 			var buildings_names = [];
@@ -16827,13 +16836,31 @@
 			updateStickers(phoda , lite);
 
 		</script>
+
+		<script type="text/javascript">
+				$("#dialogbox").dialog({
+		          autoOpen:false,
+		          // modal:true,
+		          title: "OOPS!",
+							dialogClass: 'custom-ui-widget-header-warning',
+		          width:400,
+							height:200
+		      });
+		</script>
+
+
+	<style>
+			.custom-ui-widget-header-warning {
+				background: #EBCCCC;
+				font-size: 1em;
+			}
+			#dialogbox div {
+				background: #000;
+			}
+		</style>
+
 		<script src="{% static 'mainapp/js/script.js' %}"></script>
 		<script src="{% static 'mainapp/js/lightbox.js' %}"></script>
 
-<!--
-	Paste these at the end of svg
-	<use id="use1" xlink:href="#player_girl" /> <use id="use2" xlink:href="#statue1" />
-	<use id="use3" xlink:href="#statue2" />
- -->
 </body>
 </html>

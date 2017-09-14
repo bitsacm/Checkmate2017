@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 def test(request):
     return HttpResponse('Fack! it is working :D')
-    
+
 def index(request):
     if not request.user.is_authenticated or request.user.username == "admin":
         return render(request, 'mainapp/index.html',)
@@ -76,7 +76,7 @@ def register(request):
         return render(request,'mainapp/login.html',{'form':form})
     else:
         return HttpResponse('You have already registered once from this pc! Contact neartest ACM invigilator')
-    
+
 
 def instructions(request):
     return render(request, 'mainapp/instructions.html')
@@ -139,10 +139,10 @@ def game(request):
     else:
         up = UserProfile.objects.get(user=request.user)
         switch=GameSwitch.objects.get(name='main')
-        
+
         if up.logstat==1 and request.method=='GET':
             return redirect('mainapp:congrats')
-        
+
         else:
             buildings = Building.objects.all()
             d={}
@@ -169,9 +169,9 @@ def question(request):
         at= list(up.attempts)
         bs= list(up.bstat)
         ansform=AnswerForm(request.POST)
-        
+
         if request.method == 'POST' and 'pkvalue' in request.POST:
-            
+
             if ansform.is_valid():
                 ques_id=request.POST['pkvalue']
                 index = int(ques_id)-1
@@ -181,12 +181,20 @@ def question(request):
                 ans= data['answer']
                 qs=Question.objects.all()
                 resp={}
-            
+
                 if ans is not None:
                     if sl[index]=="1":
-                        return HttpResponse("Already attempted this question correctly!" ,content_type = "application/json")
+                        resp={
+                        'status':'error',
+                        'msg':"Already attempted this question correctly!"
+                        }
+                        return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                     elif int(at[index])>=3 and sl[index]=="0":
-                        return HttpResponse("Maximum attempts reached" ,content_type = "application/json")
+                        resp={
+                        'status':'error',
+                        'error':"Maximum attempts reached"
+                        }
+                        return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                     else:
                         if at[index]=="2":
                             bs[index]="2"
@@ -223,7 +231,7 @@ def question(request):
                         resp['phoda'] = phoda
                         resp['lite'] = lite
                     up.status="".join(sl)
-                    up.save() 
+                    up.save()
                     return HttpResponse(json.dumps(resp), content_type = "application/json")
 
 
@@ -247,7 +255,7 @@ def logout(request):
 def query(request):
     if request.user.is_authenticated():
         up=UserProfile.objects.get(user=request.user)
-        
+
         if request.method=='POST' and 'player' in request.POST:
             sprite=request.POST['player']
             if sprite in ['boy','girl']:
@@ -290,7 +298,7 @@ def pingservers(request):
         r = client.post(urlx, headers=dict(Referer=urlx))
         a=r.json()
         all_list.extend(a)
-    sorted_all_list = sorted(all_list, key=lambda k: -k['Score']) 
+    sorted_all_list = sorted(all_list, key=lambda k: -k['Score'])
 
     return HttpResponse((json.dumps(sorted_all_list)), content_type = "application/json")
 
