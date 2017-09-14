@@ -29,9 +29,12 @@ def index(request):
 def register(request):
     up = UserProfile.objects.filter(ip_address=get_ip)
     if up is None or 1:
+        print("reached0")
         form = TeamForm(request.POST)
-        if request.method == 'POST' and 'register-submit' in request.POST:
+        if request.method == 'POST' :
             if form.is_valid():
+                print (form)
+                print("reached1")
                 data = form.cleaned_data
                 u = User()
                 u.username = data['teamname1']
@@ -39,6 +42,7 @@ def register(request):
                 try:
                     u.save()
                 except IntegrityError:
+                    print("reached2")
                     resp={
                     'status': 'error',
                     'msg': 'Team name already registered or other conflicting entries'
@@ -51,7 +55,13 @@ def register(request):
                 up.idno2=data['idno2']
                 up.ip_address = get_ip(request)
                 up.save()
-                return redirect('mainapp:login')
+                #return redirect('mainapp:login')
+                r={
+                "status":"redirect",
+                "url":"login"
+                }
+                print("reachedXXXX")
+                return HttpResponse(json.dumps(r),content_type="application/json")
             else:
                 error=json.loads(json.dumps(form.errors))
                 error1=[]
@@ -69,11 +79,16 @@ def register(request):
                 'status':'error',
                 'msg':' '.join(error1)
                 }
+                print("reachedbbbbb")
                 return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
         else:
             form=TeamForm(request.POST)
-            return render(request,'mainapp/login.html',{'form':form})
-        return render(request,'mainapp/login.html',{'form':form})
+            r={
+            "status":"redirect",
+            "url":"login"
+            }
+            print("reached3")
+            return HttpResponse(json.dumps(r),content_type="application/json",status=301)
     else:
         return HttpResponse('You have already registered once from this pc! Contact neartest ACM invigilator')
 
@@ -87,25 +102,47 @@ def login(request):
     else:
         g=GameSwitch.objects.get(name='main')
         if g.start_game:
+            print("reachedl0")
             tform=TeamForm(request.POST)
             lform = LoginForm(request.POST)
-            if request.method == 'POST' and 'login-submit' in request.POST:
+            if request.method == 'POST':
+                print("reachedl1")
                 if lform.is_valid():
+                    print("reachedl2")
                     data=lform.cleaned_data
                     teamname = data['teamname']
                     password = data['password']
                     user = authenticate(username = teamname, password=password)
                     if user is not None:
+                        print("reachedl3")
                         auth.login(request, user)
                         return redirect(reverse('mainapp:game'))
                     else:
+                        print("reachedl4")
                         resp={
                         'status':'error',
                         'msg':'Register before you try to Login!'
                         }
                         return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                 else:
-                    print ( lform.errors )
+                    error=json.loads(json.dumps(lform.errors))
+                    error1=[]
+                    for e in error:
+                        d=e
+                        print("d",d)
+                        if(d in ["password1","teamname1"]):
+                            d=d[:-1]
+                        error1.append(d)
+                        error1.append('-')
+                        error1.append((error[e])[0])
+                        error1.append('<br/>')
+                    print(error1)
+                    resp={
+                    'status':'error',
+                    'msg':' '.join(error1)
+                    }
+                    print("reachedbbbbb")
+                    return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
             else:
                 lform=LoginForm(request.POST)
                 return render(request, 'mainapp/login.html',{'lform':lform,'tform':tform})
