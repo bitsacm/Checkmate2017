@@ -5,7 +5,7 @@ var qVal = 1;
 var stories={"Meera":"Stories for Meera","Budh":"Stories for Budh","malA":"Story for MalA"};
 var xopen = false;
 $(document).ready(function(){
-	
+
 
 
 	window.lightbox = lightbox;
@@ -69,41 +69,52 @@ function loadQues() {
 function mysubmit() {
 
 	//Answer submission data format
-	var form_data={
-		csrfmiddlewaretoken:document.cookie.split("=")[1],
-		pkvalue:pks["pk"+qVal],
-		answer:$("#ans").val()
-	};
-	console.log('...',pks, qVal, form_data)
-	var request={
-		url:"/question",
-		type:"POST",
-		data:form_data,
-		method:'POST',
-		success: function(msg)
-		{
-			console.log(msg);
-			//update points
-			$("#score").html("Points:"+msg["score"])
-			updateStickers(msg.phoda, msg.lite)
-			//show correct
-			if(msg["status"]=="1")
-				alert("correct")
-			else
-				alert("incorrect")
+	var ans=$("#ans").val();
+	if(ans != ''){
+			var form_data={
+				csrfmiddlewaretoken:document.cookie.split("=")[1],
+				pkvalue:pks["pk"+qVal],
+				answer:ans
+			};
+			console.log('...',pks, qVal, form_data)
+			var request={
+				url:"/question",
+				type:"POST",
+				data:form_data,
+				method:'POST',
+				success: function(msg)
+				{
+					console.log(msg);
+					//update points
+					$("#score").html("Points:"+msg["score"])
+					updateStickers(msg.phoda, msg.lite)
+					//show correct
+					if(msg["status"]=="1"){
+							$('#dialogbox').html("Correct Answer ! Total score : " + msg["score"]);
+							$('#dialogbox').dialog('open');
+					}
+					else{
+							$('#dialogbox').html("Incorrect Answer ! -25 points");
+							$('#dialogbox').dialog('open');
+						}
 
-		},
-		error: function(xhr)
-		{
-			//update points
-			//show correct
-			//hide box
-			console.log(xhr);
+				},
+				error: function(msg)
+					{
+						var xyx= JSON.parse(msg["responseText"]);
+						$('#dialogbox').html(xyx.msg);
+						$('#dialogbox').dialog('open');
+					console.log(msg);
+					}
+
+			};
+
+			var response=$.ajax(request);
 		}
-
-	};
-
-	var response=$.ajax(request);
+		else {
+			$('#dialogbox').html("Empty answer not allowed");
+			$('#dialogbox').dialog('open');
+		}
   }
 
  function query(){
