@@ -77,8 +77,9 @@ body{
 .bottom a{
   font-family: courier, verdana;
   position: absolute;
-  left: 39%;
+  left: 33%;
   top: 35%;
+  font-size: 25px;
   width: auto;
   height: auto;
   /*font-weight: bold;*/
