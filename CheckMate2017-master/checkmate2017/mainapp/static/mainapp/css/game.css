@@ -202,27 +202,30 @@ body{
 
 #retry .container{
 	position: absolute;
-	top: 10px;
+	top: 5px;
 	width: 0;
 	/*font: 0/0 arial, verdana;*/
 	left: 10px;
 	background: #fff;
 	color: #fff;
-	padding: 2px 5px;
-	border-radius: 6px 0 0 6px;
+	padding: 5px 0px;
+	border-radius: 10px;
 	height: 30px;
 	/*border: 1px solid #000;*/
-	font-size: 22px;
+	font-size: 18px;
+	background: #fff;
 	line-height: 30px;
 	overflow: hidden;
 	margin: 0;
-	transition: all 0.4s ease-in-out;
+	transition: all 0.4s ease-in;
+	text-align: center;
 }
 
 #retry:hover .container{
-	width: 100px;
-	left: -80px;
-	
+
+	width: 110px;
+	left: -140px;
+	padding: 5px 10px;
 	color: #000;
 	
 }
@@ -239,7 +242,7 @@ body{
 
 #info{
 	padding: 40px;
-	background: rgba(0,0,0,0.2);
+	background: rgba(0,0,0,0.5);
 	border-radius: 10px;
 	width: 700px;
 	color: #fff;
@@ -250,6 +253,7 @@ body{
 	float: right;
 	position: relative;
 	top: 30px;
+	cursor: pointer;
 }
 
 #info .content .col{
@@ -288,7 +292,7 @@ body{
 #info .link a{
 	color: #000;
 	text-decoration: none;
-	background: rgba(255, 255, 255, 0.6);
+	background: rgba(255, 255, 255, .9);
 	padding: 10px;
 	border-radius: 6px;
 }
