@@ -1,92 +1,26 @@
-<<<<<<< HEAD
-{%load static from staticfiles%}
 <!DOCTYPE html>
+{%load static from staticfiles%}
 <html lang="en">
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="description" content="">
-      <meta name="author" content="">
       <title>Congrats</title>
-
-
-      <link rel="stylesheet" href="{% static 'mainapp/css/bootstrap.min.css' %}">
-      <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/congrats.css' %}">
-
-      <link href='http://fonts.googleapis.com/css?family=Sonsie+One|Shrikhand&effect=3d'rel='stylesheet' type='text/css'>
-
    </head>
 
-   <body style="overflow-x:hidden;">
-
-   <div id="part1">
-    <div class="container" style="width:500px !important;">
-         <div class="row">
-            <div class="col-sm-12">
-               <h1 class="text-center head font-effect-3d">Congratulations!<br></h1>
-               <h3 class="text-center">You have completed the game!</h3>
+   <body>
+     <div class="card" id="main">
+        <div class="top">
+            <h1>Congratulations!</h1>
+            <h3>You have successfully completed the game !</h3>
+            <div class="check">
+              Checkmate
             </div>
-         </div>
-
-         <div class="row">
-            <div class="col-sm-12">
-               <a href="{% url 'mainapp:logout' %}" class="center-block text-center">LOG OUT</a>
-            </div>
-         </div>
+        </div>
+        <div class="bottom">
+            <a href="{% url 'mainapp:logout' %}">LOG OUT</a>
+        </div>
       </div>
-      </div>
-      <div id="part2">
-         <img id="part2-1" class="center-block" src="{% static 'mainapp/img/acad.jpg' %}">
-
-      </div>
-
-   <script type="text/javascript" src="{% static 'mainapp/js/jquery-3.1.0.min.js' %}"></script>
+      <div id="footer"></div>
    </body>
-=======
-{%load static from staticfiles%}
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="description" content="">
-      <meta name="author" content="">
-      <title>Congrats</title>
-
-
-      <link rel="stylesheet" href="css/bootstrap.min.css">
-      <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-      <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/congrats.css' %}">
-
-      <link href='http://fonts.googleapis.com/css?family=Sonsie+One|Shrikhand&effect=3d'rel='stylesheet' type='text/css'>
-
-   </head>
-
-   <body style="overflow-x:hidden;">
-
-   <div id="part1">
-    <div class="container" style="width:500px !important;">
-         <div class="row">
-            <div class="col-sm-12">
-               <h1 class="text-center head font-effect-3d">Congratulations!<br></h1>
-               <h3 class="text-center">You have completed the game!</h3>
-            </div>
-         </div>
-
-         <div class="row">
-            <div class="col-sm-12">
-               <a href="pokemon/register.html" class="center-block text-center">LOG OUT</a>
-            </div>
-         </div>
-      </div>
-      </div>
-      <div id="part2">
-         <img id="part2-1" class="center-block" src="{% static 'pokemon/img/rulebook.jpg' %}">
-
-      </div>
-
-   <script type="text/javascript" src="{% static 'pokemon/js/jquery-3.1.0.min.js' %}"></script>
-   </body>
->>>>>>> 5f579a7b1f2f88503966e3cd354dbe1bf2eb8dbf
-   </html>
+</html>
