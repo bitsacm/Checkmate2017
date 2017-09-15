@@ -11,6 +11,8 @@ $(document).ready(function(){
 	//fancy colors
 	$('body').css('backgroundColor', '#c6ac96');
 	$('body').css('fontFamily', 'arial, verdana');
+	$('body').append('<div id="check"></div>');
+	
 	
 	var svg = $('svg');
 	
@@ -229,6 +231,7 @@ $(document).ready(function(){
 		for(i in player_props.rect){
 			player_props.new_rect[i] = player_props.rect[i]; 
 		}
+		
 
 		var move = player_props.top || player_props.left;
 		if(!move){
@@ -240,6 +243,7 @@ $(document).ready(function(){
 		player_props.new_rect.left += player_props.left;
 		player_props.new_rect.right -= player_props.left;
 		// console.log(player_props.new_rect)
+	
 
 		if(prev_road){
 			inRoad = checkEnclosed(player_props.new_rect, prev_road)
@@ -305,6 +309,7 @@ $(document).ready(function(){
 		var parent_rect = $('#rect2261')[0].getBoundingClientRect();
 		viewport_coords.x = player_rect.left - parent_rect.left - $(window).width()/2 ;
 		viewport_coords.y = player_rect.top - parent_rect.top - $(window).height()/2 ;
+
 		
 		// boundary conditions
 		// console.log(parent_rect.top + viewport_coords.y - viewport_coords.prev_y > 0)
@@ -440,5 +445,7 @@ $(document).ready(function(){
 	$('#help_screen .close').click(function(){
 		$('#help_screen').fadeOut();	
 	})
+
+
 
 });
