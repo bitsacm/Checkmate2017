@@ -2,7 +2,7 @@ $(document).ready(function(){
     UpdateList();
 });
 
-delay=3000
+var delay=3000;
 function UpdateList() {
     //console.log("UpdateList is working");
 
@@ -13,8 +13,8 @@ function UpdateList() {
         dataType : "json",
         success: function(response){
         console.log("response from server")
-	console.log(response)
-		
+	      console.log(response)
+
 		var leaderboard=document.getElementById('leaderboard')
 		var ele= document.getElementById('results')
 		leaderboard.removeChild(ele)
@@ -35,13 +35,13 @@ function UpdateList() {
         console.log(xhr)
         $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg ); // addind the error to the dom
         console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-    } 
+    }
 
     })
 
     setTimeout(UpdateList,delay);
 }
-	
+
 function OrderListBy(prop) {
     return function (a, b) {
         if (a[prop] > b[prop]) {

@@ -90,8 +90,8 @@ function mysubmit() {
 					updateStickers(msg.phoda, msg.lite)
 					//show correct
 					if(msg["status"]=="1"){
-							$('#dialogbox').html("Correct Answer ! Total score : " + msg["score"]);
-							$('#dialogbox').dialog('open');
+							$('#dialogbox1').html("Correct Answer ! Total score : " + msg["score"]);
+							$('#dialogbox1').dialog('open');
 					}
 					else{
 							$('#dialogbox').html("Incorrect Answer ! -25 points");

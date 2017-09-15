@@ -16790,7 +16790,7 @@
 			</div>
 		</div>
 		<div id="dialogbox" class="custom-ui-widget-header-warning"></div>
-
+		<div id="dialogbox1" class="custom-ui-widget-header-warning1"></div>
 		<script type="text/javascript">
 
 			var up = "{{up.teamname}}";
@@ -16844,8 +16844,15 @@
 		          title: "OOPS!",
 							dialogClass: 'custom-ui-widget-header-warning',
 		          width:400,
-							height:200
+							height:150
 		      });
+					$("#dialogbox1").dialog({
+					    autoOpen:false,
+					    title: "YAY!",
+							dialogClass: 'custom-ui-widget-header-warning1',
+					    width:400,
+							height:200
+					});
 		</script>
 
 
@@ -16854,6 +16861,10 @@
 				background: #EBCCCC;
 				font-size: 1em;
 			}
+			.custom-ui-widget-header-warning1 {
+						background: #D4FF8C;
+						font-size: 1em;
+					}
 			#dialogbox div {
 				background: #000;
 			}
