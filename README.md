@@ -1,4 +1,8 @@
-Integration will be going on so, use urls to navigate!
+Follow digital ocean tutorial to create a new database with the following specifications.
+        'NAME': 'checkmate',
+        'USER': 'checkmateuser',
+        'PASSWORD': 'checkmate',
+
 
 # CheckMate2017
 Check Mate event for the year 2017
