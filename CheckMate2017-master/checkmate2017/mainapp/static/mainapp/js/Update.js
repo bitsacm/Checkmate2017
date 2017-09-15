@@ -2,7 +2,7 @@ $(document).ready(function(){
     UpdateList();
 });
 
-var delay=3000;
+var delay=30000;
 function UpdateList() {
     //console.log("UpdateList is working");
 
@@ -15,14 +15,15 @@ function UpdateList() {
         console.log("response from server")
 	      console.log(response)
 
-		var leaderboard=document.getElementById('leaderboard')
+		var leaderboard=document.getElementById('leaderboards')
 		var ele= document.getElementById('results')
 		leaderboard.removeChild(ele)
 		//clear children of leaderboard
 		var ele=$("<table></table>");
-		$('#leaderboard').append(ele);
+		$('#leaderboards').append(ele);
 		ele.attr('id','results');
-            for(var i=0;i<20;i++){
+    $('#results').append("<tr><th>Rank</th><th>Teamname</th><th>Score</th></tr>");
+            for(var i=0;i<10;i++){
                 $('#results').append("<tr id=" + (i+1) +"> " + "<td>"+ (i+1) + "</td>"+ "<td>" + response[i]['Teamname'] + "</td>" + "<td>"+response[i]['Score'] + "</td>"+"</tr>");
                 console.log(response[i]);
 	    }

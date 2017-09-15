@@ -32,7 +32,7 @@ body{
 	margin: 0 10px;
 	list-style: none;
 	cursor: pointer;
-	
+
 }
 
 #main_header nav li:nth-of-type(1){
@@ -44,7 +44,14 @@ body{
 	font-size: 20px;
 	text-align: center;
 }
-
+#main_header nav li:nth-of-type(2){
+	color: #fff;
+	background: #9c283e;
+	padding: 10px;
+	-webkit-border-radius: 6px;
+	        border-radius: 6px;
+	cursor: pointer;
+}
 #main_header nav li a{
 	text-decoration: none;
 	color: #fff;
@@ -80,7 +87,7 @@ body{
 	color: #fff;
 	text-align: center;
 	line-height:20px;
-	
+
 }
 
 #dev_info{
@@ -129,7 +136,7 @@ body{
 	-webkit-justify-content: center;
 	        justify-content: center;
 	align-items: center;
-	
+
 }
 
 #canvas{
@@ -142,7 +149,7 @@ body{
 	background: #49C2B8;
 	font-family: courier,verdana;
 	color: #000;
-	
+
 }
 
 #canvas ul{
@@ -151,7 +158,7 @@ body{
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-	
+
 }
 
 #canvas li{
@@ -172,7 +179,7 @@ body{
 }
 
 #retry .img div , #retry .img, #retry{
-	
+
 	width: 30px;
 	height: 30px;
 	background: #fff;
@@ -186,7 +193,7 @@ body{
 	bottom: 60px;
 	right: 60px;
 	cursor: pointer;
-	
+
 }
 #retry .img{
 	padding: 10px;
@@ -197,7 +204,7 @@ body{
 	position: absolute;
 	background: url('../img/retry.png') 0 0 no-repeat;
 	background-size: cover;
-	
+
 }
 
 #retry .container{
@@ -222,9 +229,9 @@ body{
 #retry:hover .container{
 	width: 100px;
 	left: -80px;
-	
+
 	color: #000;
-	
+
 }
 
 #help_screen{
@@ -236,7 +243,17 @@ body{
 	align-items: center;
 	justify-content: center;
 }
-
+#leaderboard{
+	position: absolute;
+	width: 100vw;
+	top: 0;
+	height: 90vh;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
 #info{
 	padding: 40px;
 	background: rgba(0,0,0,0.2);
@@ -250,11 +267,12 @@ body{
 	float: right;
 	position: relative;
 	top: 30px;
+	cursor: pointer;
 }
 
 #info .content .col{
 	width: 30%;
-	
+
 	display: inline-block;
 	padding: 10px;
 	margin: 30px;
@@ -291,4 +309,29 @@ body{
 	background: rgba(255, 255, 255, 0.6);
 	padding: 10px;
 	border-radius: 6px;
+}
+
+#updateBtn{
+	margin-left: -5px;
+	margin-top: 15px;
+	text-align: center;
+	color: #000;
+	font-size: 12px;
+	background: rgba(255, 255, 255, 0.6);
+	padding: 12px;
+	border-radius: 15px;
+}
+
+table, td, th {
+    /*border: 1px solid #ddd;*/
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 3px;
 }
