@@ -6,16 +6,14 @@ $(document).ready(function(){
 	// $('#building_names').css({'position': 'absolute','top': 0, 'left':0, 'width': 'fit-content', 'background': 'rgba(0,0,0,0.2)', 'color': '#eee', 'fontSize': '10px', 'padding': '2px', 'borderRadius': '6px'});
 
 	$('#backdrop').fadeOut(0);
-
+	$('#leaderboard').hide();
 	$('#help_screen').hide();
 	//fancy colors
 	$('body').css('backgroundColor', '#c6ac96');
 	$('body').css('fontFamily', 'arial, verdana');
-	$('body').append('<div id="check"></div>');
-	
-	
+
 	var svg = $('svg');
-	
+
 	// getNamedItem('viewbox').value
 	$('#choose').hide();
 	var player;
@@ -24,8 +22,8 @@ $(document).ready(function(){
 		setUp();
 	}
 
-	
-	
+
+
 	window.playground = svg;
 
 	var inital_pos = [];
@@ -36,38 +34,38 @@ $(document).ready(function(){
 		$('#retry').hide();
 		var obj = {
 			"none": "Null",
-			"girl": "girl", 
+			"girl": "girl",
 			"boy": "boy"
 		}
 		console.log(window.sprite)
 		if(window.sprite == obj["none"]){
 			return initiatePlayer();
-			
+
 		}else if(window.sprite == obj["boy"]){
 
 			window.player_id = "player_boy"
 			inital_pos = [-1100, 250];
-			
+
 			return $('#player_boy');
 
 		}
-		
+
 		inital_pos = [-1060, 250]
 		window.player_id = "player_girl"
-		
+
 		return $('#player_girl');
 	}
 
 	function initiatePlayer(){
 		console.log("called");
-		
+
 		// lightbox for choosing girl or boy
-		
+
 		$('#choose').fadeIn();
 
 		return null;
-		
-		
+
+
 	}
 
 	$('#choose li').click(function(e){
@@ -77,7 +75,7 @@ $(document).ready(function(){
 			player = getPlayer();
 			setUp();
 			var token = document.cookie.split("=")[1];
-			
+
 			$.ajax({
 				url: '/query',
 				method: 'POST',
@@ -91,7 +89,7 @@ $(document).ready(function(){
 
 	/*****
 	*
-	*  Walking on the road 
+	*  Walking on the road
 	*
 	******/
 
@@ -102,18 +100,18 @@ $(document).ready(function(){
 	var player_props, relative_x,relative_y , viewport_coords ;
 	var buildings = [$('#Meera'), $('#BalikaVidhya'), $('#Budh'), $('#Ram'), $('#XMLID_2421_'), $('#malA'), $('#g3320'), $('#Vyas'), $('#Shankar'), $('#Gandhi'), $('#Krishna'), $('#temple'), $('#Bhagirath'), $('#vishwa_karma'), $('#XMLID_1785_'), $('#gymG'), $('#ANC'), $('#FD3'), $('#FD2'), $('#Rotunda'), $('#NAB'), $('#XMLID_2622_')];
 
-	
+
 
 	// initial position
 	function setUp(){
 		// info
 		$('body').append('<div id="dev_info"><span class="marker"></span><span class="text"></span></div>');
 		$('#retry').fadeIn();
-		
+
 		player.fadeIn();
 		TweenMax.set(player, {scale: .5, xPercent: inital_pos[0], yPercent: inital_pos[1]})
-		
-		// player properties 
+
+		// player properties
 		player_props = {
 			rel_x: inital_pos[0],
 			rel_y: inital_pos[1],
@@ -176,7 +174,7 @@ $(document).ready(function(){
 			if(current=="XMLID_1785_"){
 				current = "Library";
 			}else if(current=="g3320"){
-				current = "BirlaMemorial"; 
+				current = "BirlaMemorial";
 			}else if(current =="XMLID_2622_"){
 				current = "Workshop";
 			}else if(current =="XMLID_2421_"){
@@ -185,7 +183,7 @@ $(document).ready(function(){
 			window.selected = current;
 
 			$('#dev_info .text').text(current);
-		
+
 
 		}, 100);
 
@@ -194,8 +192,8 @@ $(document).ready(function(){
 		}, 1000);
 	}
 
-	
-	
+
+
 	// movement
 	$(document).keydown(function(e){
 		player_props.top = 0;
@@ -219,7 +217,7 @@ $(document).ready(function(){
 		// move();
 		// render(player_props.top,player_props.left);
 	})
-	
+
 	var prev_road = null;
 	var history = [inital_pos, inital_pos,inital_pos, inital_pos,inital_pos];
 	var states = [true, true, true, true, true];
@@ -229,7 +227,7 @@ $(document).ready(function(){
 		var inRoad = false;
 		var notInCircle = false;
 		for(i in player_props.rect){
-			player_props.new_rect[i] = player_props.rect[i]; 
+			player_props.new_rect[i] = player_props.rect[i];
 		}
 		
 
@@ -261,7 +259,7 @@ $(document).ready(function(){
 		}
 
 		notInCircle = checkNotAboutToBeEnclosed(player_props.new_rect, $('#gandhi_circle')[0]) && checkNotAboutToBeEnclosed(player_props.new_rect, $('#patel_circle')[0]);
-		
+
 		// console.log(inRoad, notInCircle);
 		var state = (inRoad && notInCircle);
 		states.push(state);
@@ -281,20 +279,20 @@ $(document).ready(function(){
 	}
 
 	// storing each state
-	
+
 
 
 	// render animation
 	function render(player_props){
-		
-		
-	
+
+
+
 		TweenMax.to(player, .4,{xPercent:(player_props.rel_x ), yPercent:(player_props.rel_y)});
 
 		relative_y = player_props.rel_y;
 		relative_x = player_props.rel_x;
 
-		
+
 		history.push([player_props.rel_x, player_props.rel_y])
 
 	}
@@ -310,7 +308,6 @@ $(document).ready(function(){
 		viewport_coords.x = player_rect.left - parent_rect.left - $(window).width()/2 ;
 		viewport_coords.y = player_rect.top - parent_rect.top - $(window).height()/2 ;
 
-		
 		// boundary conditions
 		// console.log(parent_rect.top + viewport_coords.y - viewport_coords.prev_y > 0)
 		// console.log(parent_rect.top, viewport_coords.y - viewport_coords.prev_y)
@@ -335,7 +332,7 @@ $(document).ready(function(){
 		}
 
 
-		
+
 		if(init){
 
 			viewport_coords.prev_x = viewport_coords.x;
@@ -346,7 +343,7 @@ $(document).ready(function(){
 		else{
 			TweenMax.to(viewport_coords,3, {
 		      prev_x: viewport_coords.x,
-		 	  prev_y: viewport_coords.y, 
+		 	  prev_y: viewport_coords.y,
 			  onUpdate: function () {
 			    svg[0].attributes.getNamedItem("viewBox").value = ( viewport_coords.prev_x+ " " + viewport_coords.prev_y + " " + $(window).width()+ " "+ $(window).height());
 			  },
@@ -372,7 +369,7 @@ $(document).ready(function(){
 			}
 		}
 	})
-	
+
 
 	// returns true if  enclosing
 	function checkEnclosed(player_rect, container){
@@ -388,7 +385,7 @@ $(document).ready(function(){
 		cond_left = 	((player_rect.left) > container_rect.left && (player_rect.left) < container_rect.right),
 		cond_top = 	((player_rect.top)> container_rect.top) && ((player_rect.top) < container_rect.bottom),
 		cond_bottom = ((player_rect.bottom ) > container_rect.top) && ((player_rect.bottom )< container_rect.bottom);
-	
+
 		return (cond_right && cond_left && cond_top && cond_bottom)
 	}
 
@@ -403,21 +400,21 @@ $(document).ready(function(){
 		}
 
 		var neigbourhood = 0;
-		
+
 		mutable_rect.left = container_rect.left - neigbourhood;
 		mutable_rect.right = container_rect.right + neigbourhood;
 		mutable_rect.top = container_rect.top - neigbourhood;
 		mutable_rect.bottom = container_rect.bottom + neigbourhood;
-		
+
 		return !(checkBoundary(player_rect, mutable_rect))
-	}	
+	}
 
 	/*****
 	*
 	*	Nearest building
 	*
 	*****/
-	
+
 	function nearest_distance(player, container){
 		var player_rect = player.getBoundingClientRect();
 		var container_rect = container.getBoundingClientRect();
@@ -433,7 +430,7 @@ $(document).ready(function(){
 		return Math.sqrt(Math.pow(Math.min(left, right), 2) +  Math.pow(Math.min(top, bottom),2));
 	}
 
-	
+
 
 	svg.append(' <use id="use1" xlink:href="'+window.player_id+'" /> <use id="use2" xlink:href="#statue1" />')
 
@@ -443,9 +440,21 @@ $(document).ready(function(){
 	})
 
 	$('#help_screen .close').click(function(){
-		$('#help_screen').fadeOut();	
+		$('#help_screen').fadeOut();
 	})
 
+	$('#leaders').click(function(){
+		$('#leaderboard').fadeIn();
+	})
+
+	$('#leaderboard .close').click(function(){
+		$('#leaderboard').fadeOut();
+	})
+
+<<<<<<< HEAD
 
 
 });
+=======
+});
+>>>>>>> master

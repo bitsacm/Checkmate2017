@@ -72,12 +72,13 @@
 }
 
 .text_content{
-	text-align: justify;
+	text-align: center;
 	margin: 5px;
 	border-radius: 6px;
 	padding: 30px;
 	width: 91%;
-	overflow: contain;
+	overflow-y: scroll;
+	overflow-x: hidden;
 	height: 35vh;
 	background-color: #FFFFFF;
 }

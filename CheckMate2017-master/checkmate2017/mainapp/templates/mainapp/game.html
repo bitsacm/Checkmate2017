@@ -9,6 +9,7 @@
 		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
 		<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+		<script type="text/javascript" src="{% static 'mainapp/js/Update.js' %}"></script>
 		<script src="{% static 'mainapp/js/TweenMax.min.js'%}"></script>
 
 	</head>
@@ -23,6 +24,7 @@
 		</div>
 		<nav>
 				<li id="help">?</li>
+				<li id="leaders">Leaderboard</li>
 				<li>
 					<a href="{% url 'mainapp:congrats' %}">Quit</a>
 				</li>
@@ -17127,8 +17129,23 @@
 				<div class="link"><a href="{% url 'mainapp:instructions' %}">More Instructions >></a></div>
 			</div>
 		</div>
-		<div id="dialogbox" class="custom-ui-widget-header-warning"></div>
 
+
+		<div id="leaderboard">
+			<div id="info">
+				<div class="close">X</div>
+				<h1>Leaderboard</h1>
+				<div id="leaderboards">
+            <ol id="results">
+            </ol>
+        </div>
+				<input id="updateBtn" type="button" onclick="UpdateList()" value="Update List"/>
+			</div>
+		</div>
+
+
+		<div id="dialogbox" class="custom-ui-widget-header-warning"></div>
+		<div id="dialogbox1" class="custom-ui-widget-header-warning1"></div>
 		<script type="text/javascript">
 
 			var up = "{{up.teamname}}";
@@ -17182,8 +17199,15 @@
 		          title: "OOPS!",
 							dialogClass: 'custom-ui-widget-header-warning',
 		          width:400,
-							height:200
+							height:150
 		      });
+					$("#dialogbox1").dialog({
+					    autoOpen:false,
+					    title: "YAY!",
+							dialogClass: 'custom-ui-widget-header-warning1',
+					    width:400,
+							height:200
+					});
 		</script>
 
 
@@ -17192,6 +17216,10 @@
 				background: #EBCCCC;
 				font-size: 1em;
 			}
+			.custom-ui-widget-header-warning1 {
+						background: #D4FF8C;
+						font-size: 1em;
+					}
 			#dialogbox div {
 				background: #000;
 			}
