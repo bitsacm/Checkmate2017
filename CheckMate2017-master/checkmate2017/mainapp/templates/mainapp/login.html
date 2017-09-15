@@ -8,7 +8,8 @@
 		<link rel="stylesheet" href="{% static 'mainapp/css/login.css' %}">
 		<link rel="stylesheet" href="{% static 'mainapp/css/style.css' %}">
 		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
-		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+		<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
   </head>
 
 	<body>
@@ -40,8 +41,8 @@
 		    <li id="signIn"> <a href="#">Log In</a></li>
 		    <li id="signUp"><a href="#">&emsp;Sign up</a></li>
 		  </ul>
-		  
-		  
+
+
 		  <div class="panel__wrap">
 		    <div class="panel__box active" id="signInBox">
 		  <form id="login-form" action="{% url 'mainapp:login' %}" role="form" style="display: block;" method="POST" >
@@ -50,19 +51,19 @@
                 {% if error_message %}
                   {{ error_message }}
                 {% endif %}
-				
+
 		      <label>Team name
-		        <input data-check="teamname"  type="text" name="teamname" id="teamname"  value="" placeholder="Teamname" value="" >
+		        <input data-check="teamname"  type="text" name="teamname" id="teamname" placeholder="Teamname" value="" >
 		      </label>
 		      <label>Password
-		        <input type="password" name="password" id="password"  value="" placeholder="Password" value="" >
+		        <input type="password" name="password" id="password" placeholder="Password">
 		      </label>
 		      <input type="submit" name="login-submit" value="login"/>
 		</form>
 		    </div>
-		
-			
-			
+
+
+
 		    <div class="panel__box" id="signUpBox">
 			<form id = "register-form" action ="{% url 'mainapp:register' %}" role="form" style="display: block;" method="POST" >
 			{% csrf_token %}
@@ -71,23 +72,113 @@
                   {{ error_message }}
                 {% endif %}
 				      <label>Team name
-		        <input  type="text" name="teamname1"    placeholder="Teamname" value="">
+		        <input  type="text" name="teamname1" id="team"    placeholder="Teamname">
 		      </label>
 			  <label>BITS ID1
-		        <input  type="text" name="idno1"    placeholder="BITS ID number" value="">
+		        <input  type="text" name="idno1" id='id1'   placeholder="BITS ID number">
 		      </label>
 		      <label>BITS ID2
-		        <input  type="text" name="idno2"    placeholder="BITS ID number(optional)" value="" >
+		        <input  type="text" name="idno2" id='id2'    placeholder="BITS ID number(optional)">
 		      </label>
 		      <label>Password
-		        <input type="password" name="password1" value="" placeholder="Password" >
+		        <input type="password" name="password1" id='pass' placeholder="Password" >
 		      </label>
 					<input type="submit" name= "register-submit" value="Register Now"/>
 			</form>
 		    </div>
 		  </div>
 		  </div>
+
+			<div id="dialogbox" class="custom-ui-widget-header-warning"></div>
+
+		<script>
+
+		$("#dialogbox").dialog({
+					autoOpen:false,
+					title: "OOPS!",
+					dialogClass: 'custom-ui-widget-header-warning',
+					width:400,
+					height:200
+			});
+
+
+			$("#register-form").submit(function(event){
+					event.stopPropagation();
+    			event.preventDefault();
+					var datas={
+						teamname1 : $('#team').val(),
+						idno1 : $('#id1').val(),
+						idno2 : $('#id2').val(),
+						password1 : $('#pass').val(),
+						csrfmiddlewaretoken: document.cookie.split("=")[1]
+					}
+					console.log(datas);
+					var options = {
+        	success:       showResponse,  // post-submit callback
+					error: showError,
+					data: datas,
+        	url:       '/register',         // override for form's 'action' attribute
+        	type:      'POST',        // 'get' or 'post', override for form's 'method' attribute
+    	};
+			$.ajax(options);
+			return false;
+		});
+
 		
+		$("#login-form").submit(function(event){
+				event.stopPropagation();
+				event.preventDefault();
+				var datas={
+					teamname : $('#teamname').val(),
+					password : $('#password').val(),
+					csrfmiddlewaretoken: document.cookie.split("=")[1]
+				}
+				console.log(datas);
+				var options = {
+				success:       showRes,  // post-submit callback
+				error: showErr,
+				data: datas,
+				url:       '/login',         // override for form's 'action' attribute
+				type:      'POST',        // 'get' or 'post', override for form's 'method' attribute
+		};
+		$.ajax(options);
+		return false;
+	});
+
+			function showResponse(msg) {
+				alert("Successfully registered")
+				window.location='/login';
+				console.log(msg)
+			}
+			function showError(msg){
+				console.log(msg);
+				var errors=JSON.parse(msg['responseText']);
+				$('#dialogbox').html(errors.msg);
+				$('#dialogbox').dialog('open');
+			}
+
+			function showRes(msg) {
+							alert("Successful Login")
+							window.location='/game';
+							console.log(msg)
+						}
+			function showErr(msg){
+							console.log(msg);
+							var errors=JSON.parse(msg['responseText']);
+							$('#dialogbox').html(errors.msg);
+							$('#dialogbox').dialog('open');
+				}
+
+		</script>
+		<style>
+				.custom-ui-widget-header-warning {
+					background: #EBCCCC;
+					font-size: 1em;
+				}
+				#dialogbox div {
+					background: #000;
+				}
+			</style>
 
 		<script src="{% static 'mainapp/js/login.js' %}"></script>
 		<script src="{% static 'mainapp/js/main.js' %}"></script>
