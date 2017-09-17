@@ -229,7 +229,7 @@ def question(request):
                     elif int(at[index])>=3 and sl[index]=="0":
                         resp={
                         'status':'error',
-                        'error':"Maximum attempts reached"
+                        'msg':"Maximum attempts reached"
                         }
                         return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
                     else:
@@ -277,13 +277,14 @@ def congrats(request):
         up = UserProfile.objects.get(user=request.user)
         up.logstat=1
         up.save()
+        a = up.score
     else:
         resp={
         'status':'error',
         'msg':'You chose to end the game! you cannot log back in anymore!'
         }
         return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
-    return render(request,'mainapp/congrats.html')
+    return render(request,'mainapp/congrats.html', {'a':a})
 
 def logout(request):
     django_logout(request)

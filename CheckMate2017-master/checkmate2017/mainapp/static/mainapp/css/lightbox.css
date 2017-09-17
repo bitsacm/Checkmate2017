@@ -16,15 +16,17 @@
 	align-items: center;
 	-webkit-justify-content: center;
 	        justify-content: center;
+					overflow: scroll;
+					padding: 50px 0;
+		box-sizing: border-box;
 }
 
 #backdrop .lightbox{
 	width: 70vw;
-	height: 70vh;
 	background: #49C2B8;
 	overflow: hidden;
 	border-radius: 15px;
-
+	margin: auto;
 }
 
 #backdrop header{
@@ -77,9 +79,9 @@
 	border-radius: 6px;
 	padding: 30px;
 	width: 91%;
-	overflow-y: scroll;
+	/*overflow-y: scroll;*/
 	overflow-x: hidden;
-	height: 35vh;
+	height: 100%;
 	background-color: #FFFFFF;
 }
 .extras{
@@ -106,4 +108,18 @@
 }
 #continue{
 	padding: 8px;
+}
+
+#msg_box{
+	position: absolute;
+	bottom: 0px;
+	left: calc(50vw - 150px);
+	width: 300px;
+	height: 70px;
+	background: rgba(0,0,0,0.8);
+	border-radius: 6px;
+	color: #fff;
+	display: none;
+	line-height: 70px;
+	text-align: center;
 }

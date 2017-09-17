@@ -4,15 +4,19 @@ var pks={};
 var qVal = 1;
 var stories={"Meera":"Stories for Meera","Budh":"Stories for Budh","malA":"Story for MalA"};
 var xopen = false;
+var inQues=false;
 $(document).ready(function(){
 
 
 
 	window.lightbox = lightbox;
 
+
+
 	$('#backdrop .close').click(function(){
 		$('#backdrop').fadeOut();
 		xopen = false;
+		inQues=false;
 	})
 
 })
@@ -24,13 +28,22 @@ function lightbox(){
 	var buttons_and_inputs=document.getElementById('extra_part');
 	var building=window.selected;
 	text_content.innerHTML=stories[building];
-	buttons_and_inputs.innerHTML="<button id='continue' onclick='loadQues()'>Continue...</button>";
+	$(document).keyup(function(e) {
+     if (e.keyCode == 27) {
+			 $('#backdrop').fadeOut();
+			 xopen = false;
+			 inQues=false;
+    }
+	});
+	loadQues();
+	//buttons_and_inputs.innerHTML="<button id='continue' onclick='loadQues()'>Continue...</button>";
 }
 
 function loadQues() {
 	var token = document.cookie.split("=")[1];
 	var buttons_and_inputs=document.getElementById('extra_part');
 	var text_content=document.getElementById('content_text');
+	inQues=true;
 	var a = {
 		url: '/game',
 		data: {
@@ -64,6 +77,12 @@ function loadQues() {
 	var answer_form="<input id= 'ans' name='answer' type='text' placeholder='Answer'><button id='submit' onclick='mysubmit()'>Submit</button>";//answer form html
 	buttons_and_inputs.innerHTML=answer_form;
 
+	$(document).keyup(function(e) {
+     if (e.keyCode == 13 && inQues == true) {
+			 mysubmit();
+    }
+	});
+
 }
 
 function mysubmit() {
@@ -90,21 +109,25 @@ function mysubmit() {
 					updateStickers(msg.phoda, msg.lite)
 					//show correct
 					if(msg["status"]=="1"){
-							$('#dialogbox1').html("Correct Answer ! Total score : " + msg["score"]);
-							$('#dialogbox1').dialog('open');
+
+							var text = "Correct Answer ! Total score : " + msg["score"] ;
+								msgb(text)
+
 					}
 					else{
-							$('#dialogbox').html("Incorrect Answer ! -25 points");
-							$('#dialogbox').dialog('open');
+
+							var text = "Incorrect Answer ! -25 points";
+							msgb(text);
 						}
 
 				},
 				error: function(msg)
 					{
+						console.log("In error")
 						var xyx= JSON.parse(msg["responseText"]);
-						$('#dialogbox').html(xyx.msg);
-						$('#dialogbox').dialog('open');
-					console.log(msg);
+
+						console.log(msg);
+						msgb(xyx.msg);
 					}
 
 			};
@@ -112,10 +135,21 @@ function mysubmit() {
 			var response=$.ajax(request);
 		}
 		else {
-			$('#dialogbox').html("Empty answer not allowed");
-			$('#dialogbox').dialog('open');
+
+			msgb("Empty answer not allowed");
 		}
   }
+
+	function msgb(string){
+		console.log('msgb called')
+		$("#msg_box").text(string);
+		$("#msg_box").fadeIn();
+		setTimeout(function(){
+			$("#msg_box").fadeOut();
+		}, 2000)
+	}
+
+	window.msgb = msgb;
 
  function query(){
  	var form_data={

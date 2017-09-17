@@ -5,11 +5,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Congrats</title>
+      <link rel="stylesheet" type="text/css" href="{% static 'mainapp/fonts/fonts.css'%}">
       <link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/congrats.css' %}">
+
    </head>
 
    <body>
-     <div class="card" id="main">
+     <!-- <div class="card" id="main">
         <div class="top">
             <h1>Congratulations!</h1>
             <h3>You have successfully completed the game !</h3>
@@ -20,7 +22,20 @@
         <div class="bottom">
             <a href="{% url 'mainapp:logout' %}">LOG OUT</a>
         </div>
+      </div> -->
+        <div id="footer"></div>
+      <div id="wrapper">
+        <div class="main">
+          <div class="box">
+            <span>Your score: {{a}}</span>
+
+          </div>
+          <div class="box"><a href="/logout">Logout</a></div>
+        </div>
       </div>
-      <div id="footer"></div>
+      <script>
+      var a = {{a}};
+      </script>
+
    </body>
 </html>

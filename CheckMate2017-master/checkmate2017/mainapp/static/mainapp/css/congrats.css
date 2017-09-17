@@ -19,6 +19,9 @@ body{
   height: 100vh;
   overflow: hidden;
   background-color: #5BF3E5;
+  font-family: montserrat, arial,verdana;
+  font-size: 22px;
+  line-height: 24px;
 }
 #footer{
   width: 100%;
@@ -27,7 +30,7 @@ body{
   top: 70%;
   z-index: 0;
   background-color: #36E9D9;
-}
+  }/*
 .card{
   top: 26%;
   z-index: 10;
@@ -72,8 +75,8 @@ body{
   width: 100%;
   top: 50%;
   background-color: #fff;
-}
-
+}*/
+/*
 .bottom a{
   font-family: courier, verdana;
   position: absolute;
@@ -82,7 +85,7 @@ body{
   font-size: 25px;
   width: auto;
   height: auto;
-  /*font-weight: bold;*/
+  font-weight: bold;
   border-radius: 20px;
   border: 2px solid #DAAB1A;
   text-decoration: none;
@@ -91,4 +94,60 @@ body{
 }
 .bottom a:hover{
   background-color:#9934CA;
+}*/
+
+#wrapper{
+  height: 100vh;
+  width: 100vw;
+  /*background: #fff;*/
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+/*#wrapper *{
+  border: 1px solid #000;
+}*/
+
+#wrapper .main{
+  width: 320px;
+  height: 415px;
+  background: url('../img/congratulations.png') 0 0 no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+#wrapper .box{
+  width: 150px;
+  height: 60px;
+  position: absolute;
+  border-radius: 6px;
+  text-align: center;
+}
+
+
+#wrapper .box:nth-of-type(1){
+  top: 170px;
+  left: 90px;
+  line-height: 60px;
+  margin-top: 5px;
+  font-size: 20px;
+  color: #dfb220;
+}
+
+#wrapper .box:nth-of-type(2){
+  top: 330px;
+  left: 90px;
+  background: #f00;
+  color: #fff;
+  line-height: 60px;
+}
+
+#wrapper .box:nth-of-type(2) a{
+  text-decoration: none;
+  height: 60px;
+  width: 150px;
+  color: #fff;
 }

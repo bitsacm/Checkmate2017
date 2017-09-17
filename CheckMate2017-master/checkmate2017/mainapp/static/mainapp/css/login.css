@@ -370,3 +370,18 @@ a {
     }
   }
 }
+
+#msg_box{
+	position: absolute;
+	bottom: 0px;
+	left: calc(50vw - 150px);
+	width: 300px;
+
+	background: rgba(0,0,0,0.8);
+	border-radius: 6px;
+	color: #fff;
+	display: none;
+	line-height: 26px;
+  padding: 5px 0;
+	text-align: center;
+}

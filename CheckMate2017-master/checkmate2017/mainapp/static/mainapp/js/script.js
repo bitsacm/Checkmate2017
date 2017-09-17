@@ -8,6 +8,7 @@ $(document).ready(function(){
 	$('#backdrop').fadeOut(0);
 	$('#leaderboard').hide();
 	$('#help_screen').hide();
+		$('#quit_alert').hide();
 	//fancy colors
 	$('body').css('backgroundColor', '#c6ac96');
 	$('body').css('fontFamily', 'arial, verdana');
@@ -68,14 +69,14 @@ $(document).ready(function(){
 
 	}
 
-	$('#choose li').click(function(e){
+	$('#choose li, #choose li img').click(function(e){
 			var choice = $(e.target).attr('data');
 			window.sprite  = choice;
 			$('#choose').fadeOut();
 			player = getPlayer();
 			setUp();
 			var token = document.cookie.split("=")[1];
-
+			console.log('sending choice',choice);
 			$.ajax({
 				url: '/query',
 				method: 'POST',
@@ -164,11 +165,7 @@ $(document).ready(function(){
 			})
 			var current = sorted[0][0];
 			new_building_id = current;
-			if(old_building_id){
-				TweenMax.to($('#'+ old_building_id), .4 ,{scale: 1});
-			}
-			// $('#'+ current).css('transformOrigin', '0% 0%');
-			// TweenMax.to($('#'+ current), .4 ,{scale: 1.05});
+
 			old_building_id = current;
 
 			if(current=="XMLID_1785_"){
@@ -190,6 +187,8 @@ $(document).ready(function(){
 		var view = setInterval(function(){
 			update_viewPort_coords(0);
 		}, 1000);
+
+		svg.append(' <use id="use1" xlink:href="#'+window.player_id+'" /> <use id="use2" xlink:href="#statue1" />')
 	}
 
 
@@ -219,7 +218,10 @@ $(document).ready(function(){
 	})
 
 	var prev_road = null;
-	var history = [inital_pos, inital_pos,inital_pos, inital_pos,inital_pos];
+	var history = [];
+	for( var i = 0; i< 30; i++){
+		history.push(inital_pos);
+	}
 	var states = [true, true, true, true, true];
 	var retry = [false, false, false, false, false];
 
@@ -229,7 +231,7 @@ $(document).ready(function(){
 		for(i in player_props.rect){
 			player_props.new_rect[i] = player_props.rect[i];
 		}
-		
+
 
 		var move = player_props.top || player_props.left;
 		if(!move){
@@ -241,7 +243,15 @@ $(document).ready(function(){
 		player_props.new_rect.left += player_props.left;
 		player_props.new_rect.right -= player_props.left;
 		// console.log(player_props.new_rect)
-	
+		// roads.each(function(ind, ele){
+		// 		if(checkEnclosed(player_props.new_rect, ele)){
+		// 			$(ele).css('fill', '#eee');
+		// 			// console.log(ele);
+		// 		}else{
+		// 			$(ele).css('fill', '#222')
+		// 		}
+		// })
+
 
 		if(prev_road){
 			inRoad = checkEnclosed(player_props.new_rect, prev_road)
@@ -432,7 +442,7 @@ $(document).ready(function(){
 
 
 
-	svg.append(' <use id="use1" xlink:href="'+window.player_id+'" /> <use id="use2" xlink:href="#statue1" />')
+
 
 
 	$('#help').click(function(){
@@ -451,10 +461,15 @@ $(document).ready(function(){
 		$('#leaderboard').fadeOut();
 	})
 
-<<<<<<< HEAD
+	$('#quit').click(()=>{
+		$('#quit_alert').fadeIn();
+	})
 
+	$('#quit_alert .close').click(function(){
+		$('#quit_alert').fadeOut();
+	})
 
+	$('#dismiss_alert').click(function(){
+				$('#quit_alert').fadeOut();
+	})
 });
-=======
-});
->>>>>>> master

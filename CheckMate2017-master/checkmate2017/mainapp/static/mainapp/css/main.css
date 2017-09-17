@@ -24,7 +24,7 @@ body {
   background: #f6f6f6;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; 
+  -moz-osx-font-smoothing: grayscale;
     height: 100vh;
   }
 
@@ -54,7 +54,7 @@ a:focus {
   display: block;
   align-items:center;
   wrap:flex-wrap;
-  overflow: hidden; 
+  overflow: hidden;
   margin: 30px;
   margin-left: 35vw;}
 
@@ -313,7 +313,7 @@ h5 {
   background-color: #222;
   border: none;
   display: inline-block;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'montserrat', sans-serif;
   font-size: 0.85em;
   font-weight: 700;
   text-decoration: none;
@@ -575,4 +575,3 @@ h5 {
     filter: hue-rotate(360deg); } }
 
 /*# sourceMappingURL=main.css.map */
- 

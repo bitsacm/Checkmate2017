@@ -9,8 +9,8 @@
 		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/normalize.css' %}"/>
 		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/main.css' %}"/>
 		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/style.css' %}"/>
-		// TODO: find local file for font
-		<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+		<!-- <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'> -->
+		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/fonts/fonts.css' %}"/>
 		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'mainapp/js/main1.js' %}"></script>
 		<link rel="stylesheet" type="text/css" href="{% static 'mainapp/css/loader.css' %}">
@@ -42,9 +42,9 @@
 									<li>
 											<a href="{% url 'mainapp:instructions' %}" title="instr">Instructions</a>
 									</li>
-									<li>
+									<!-- <li>
 											<a href="{% url 'mainapp:leaderboard' %}" title="lead">Leaderboard</a>
-									</li>
+									</li> -->
 									<li>
 											<a href="{% url 'mainapp:login' %}" title="regis">Login</a>
 									</li>

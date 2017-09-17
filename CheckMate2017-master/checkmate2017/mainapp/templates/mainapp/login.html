@@ -8,9 +8,7 @@
 		<link rel="stylesheet" href="{% static 'mainapp/css/login.css' %}">
 		<link rel="stylesheet" href="{% static 'mainapp/css/style.css' %}">
 		<script src="{% static 'mainapp/js/jquery.min.js' %}"></script>
-		<script src="http://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
-		<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
-  </head>
+		  </head>
 
 	<body>
 		<div  class="open">
@@ -23,9 +21,9 @@
 									<li>
 											<a href="{% url 'mainapp:instructions' %}" title="instr">Instructions</a>
 									</li>
-									<li>
+									<!-- <li>
 											<a href="#" title="lead">Leaderboard</a>
-									</li>
+									</li> -->
 									<li>
 											<a href="{% url 'mainapp:login' %}" title="regis">Login</a>
 									</li>
@@ -89,17 +87,10 @@
 		  </div>
 		  </div>
 
-			<div id="dialogbox" class="custom-ui-widget-header-warning"></div>
 
+			<div id="msg_box"></div>
 		<script>
 
-		$("#dialogbox").dialog({
-					autoOpen:false,
-					title: "OOPS!",
-					dialogClass: 'custom-ui-widget-header-warning',
-					width:400,
-					height:200
-			});
 
 
 			$("#register-form").submit(function(event){
@@ -124,7 +115,7 @@
 			return false;
 		});
 
-		
+
 		$("#login-form").submit(function(event){
 				event.stopPropagation();
 				event.preventDefault();
@@ -146,39 +137,37 @@
 	});
 
 			function showResponse(msg) {
-				alert("Successfully registered")
+				msgb("Successfully Registered In")
 				window.location='/login';
 				console.log(msg)
 			}
 			function showError(msg){
 				console.log(msg);
 				var errors=JSON.parse(msg['responseText']);
-				$('#dialogbox').html(errors.msg);
-				$('#dialogbox').dialog('open');
+				msgb(errors.msg)
 			}
 
 			function showRes(msg) {
-							alert("Successful Login")
+							msgb("Successfully Logged In")
 							window.location='/game';
 							console.log(msg)
 						}
 			function showErr(msg){
 							console.log(msg);
 							var errors=JSON.parse(msg['responseText']);
-							$('#dialogbox').html(errors.msg);
-							$('#dialogbox').dialog('open');
+							msgb(errors.msg)
+				}
+
+				function msgb(string){
+					console.log('msgb called')
+					$("#msg_box").html(string);
+					$("#msg_box").fadeIn();
+					setTimeout(function(){
+						$("#msg_box").fadeOut();
+					}, 2000)
 				}
 
 		</script>
-		<style>
-				.custom-ui-widget-header-warning {
-					background: #EBCCCC;
-					font-size: 1em;
-				}
-				#dialogbox div {
-					background: #000;
-				}
-			</style>
 
 		<script src="{% static 'mainapp/js/login.js' %}"></script>
 		<script src="{% static 'mainapp/js/main.js' %}"></script>
