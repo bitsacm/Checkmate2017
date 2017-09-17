@@ -56,3 +56,11 @@ class GameSwitch(models.Model):
 
 		def __str__(self):
 				return self.name
+
+class TeamProfile(models.Model):
+	teamname = models.CharField(max_length=200)
+	idno1 = models.CharField(max_length=20,primary_key=True, validators=[
+		validators.RegexValidator(re.compile('^201[0-9]{1}[0-9A-Z]{4}[0-9]{4}P$'), message='Enter your valid BITS-mail', code='invalid!')])
+
+	def __str__(self):
+    		return self.teamname

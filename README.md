@@ -21,7 +21,7 @@ Some minor issues that were faced:( Has been assigned as small issues)
 
 2> IP based checks to be improved
 
-3> ID across teams 
+3> ID across teams: Has been resolved. For further information, refer to Issue 2. 
 
 
 To use the django project, create a virtual environment activate it. use pip install -r requirements to install required packages then python manage.py makemigrations python manange.py migrate python mange.py runserver
