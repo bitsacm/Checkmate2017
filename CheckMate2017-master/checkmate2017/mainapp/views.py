@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.http import HttpResponse, Http404 ,HttpResponseForbidden
-from .models import UserProfile, GameSwitch, Building, Question, Answer
+from .models import UserProfile, GameSwitch, Building, Question, Answer, TeamProfile
 from django.shortcuts import redirect, render_to_response
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.contrib import auth
@@ -36,6 +36,21 @@ def register(request):
                 print (form)
                 print("reached1")
                 data = form.cleaned_data
+                ###  Patch for Issue 2
+                ###  TeamProfile object created here.
+                team = TeamProfile()
+                team.teamname = data['teamname1']
+                team.idno1 = data['idno1']
+                try:
+                    t = TeamProfile.objects.get(pk=data['idno1'])
+                    resp = {
+                        'status': 'error',
+                        'msg': 'BITS ID 1 has already been used to create a Team!  '
+                    }
+                    return HttpResponse(json.dumps(resp), content_type="application/json", status=500)
+                except Exception:
+                    team.save()
+                ### Patch Ends
                 u = User()
                 u.username = data['teamname1']
                 u.set_password(data['password1'])
@@ -48,6 +63,7 @@ def register(request):
                     'msg': 'Team name already registered or other conflicting entries'
                     }
                     return HttpResponse(json.dumps(resp), content_type = "application/json",status=500)
+                
                 up = UserProfile()
                 up.user = u
                 up.teamname = data['teamname1']
@@ -90,7 +106,7 @@ def register(request):
             print("reached3")
             return HttpResponse(json.dumps(r),content_type="application/json",status=301)
     else:
-        return HttpResponse('You have already registered once from this pc! Contact neartest ACM invigilator')
+        return HttpResponse('You have already registered once from this pc! Contact nearest ACM invigilator')
 
 
 def instructions(request):
